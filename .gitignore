@@ -1,6 +1,15 @@
 # Obsidian
 .obsidian/
 
+# Compiled Bootstrap CSS
+app/static/css/*.scss.*
+
+# Bootstrap Source Code
+app/static/sass/bootstrap/
+app/static/css/icons/
+app/static/js/popper.min.js
+app/static/js/bootstrap.min.js
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

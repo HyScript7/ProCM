@@ -1,0 +1,14 @@
+{% if not request.cookies.get('cookies', False) %}
+<div
+  class="cookie-consent container-fluid w-100 p-3 text-light bg-dark border border-3 border-primary"
+>
+  <p>
+    <strong>This website uses cookies</strong> to store your active login state.
+  </p>
+  <form>
+    <button class="btn btn-primary" formaction="/acceptcookies">
+      Accept
+    </button>
+  </form>
+</div>
+{% endif %}
