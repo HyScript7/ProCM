@@ -26,6 +26,6 @@ MONGO_URI: str  = f"mongodb{'+srv' if MONGO_SRV else ''}://{MONGO_USER}:{MONGO_P
 
 # Database configuration
 PCM_DATABASE               = config("PCM_DATABASE", "ProCM")
-PCM_COLLECTION_USERS       = config("PCM_USERS", "Users")
-PCM_COLLECTION_PROJECTS    = config("PCM_ARTICLES", "Projects")
-PCM_COLLECTION_POSTS       = config("PCM_DISCUSSIONS", "Posts")
+PCM_COLLECTION_USERS       = "PCM_" + config("PCM_USERS", "Users")
+PCM_COLLECTION_PROJECTS    = "PCM_" + config("PCM_ARTICLES", "Projects")
+PCM_COLLECTION_POSTS       = "PCM_" + config("PCM_DISCUSSIONS", "Posts")
