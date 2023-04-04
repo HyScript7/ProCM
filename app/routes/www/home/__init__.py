@@ -8,5 +8,5 @@ from .. import www
 @www.route("/")
 async def root():
     return render_template(
-        "index.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR
+        "home/index.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR
     )

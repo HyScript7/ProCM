@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-from .www import www
+from .www import www, admin
 
-routes: list[tuple[Blueprint, str]] = [(www, "")]
+routes: list[tuple[Blueprint, str]] = [(www, ""), (admin, "/admin/")]

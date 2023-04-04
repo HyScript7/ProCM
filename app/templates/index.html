@@ -15,8 +15,7 @@
     </script>
     {% if hostname %}
     <!-- You are conneted to {{hostname}} -->
-    {% endif %} {% include "components/navbar.html" %} {% block content %} {%
-    endblock %} {% include "components/footer.html" %} {% include
+    {% endif %} {% block content %} {% endblock %} {% include
     "components/cookies.html" %} {% for url in js %}
     <script src="{{url}}"></script>
     {% endfor %}

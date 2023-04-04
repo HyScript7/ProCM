@@ -3,6 +3,7 @@ import time
 from flask import Blueprint, Response, make_response, redirect, request
 
 www = Blueprint("www", __name__)
+admin = Blueprint("admin", __name__)
 
 
 @www.route("/acceptcookies")
@@ -18,3 +19,4 @@ async def cookies_accept():
 
 
 from .home import *
+from .admin import *

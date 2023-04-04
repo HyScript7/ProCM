@@ -12,9 +12,9 @@ mv ./bootstrap-5.2.2/scss ./sass/bootstrap/scss
 rm -frd ./bootstrap-5.2.2
 rm ./v5.2.2.zip
 
-wget https://github.com/twbs/icons/releases/download/v1.9.1/bootstrap-icons-1.10.3.zip
-unzip ./bootstrap-icons-1.10.3.zip
+wget https://github.com/twbs/icons/releases/download/v1.10.4/bootstrap-icons-1.10.4.zip
+unzip ./bootstrap-icons-1.10.4.zip
 mkdir ./css/icons
-mv ./bootstrap-icons-1.10.3/* ./css/icons
-rm -frd ./bootstrap-icons-1.10.3
-rm ./bootstrap-icons-1.10.3.zip
+mv ./bootstrap-icons-1.10.4/* ./css/icons
+rm -frd ./bootstrap-icons-1.10.4
+rm ./bootstrap-icons-1.10.4.zip
