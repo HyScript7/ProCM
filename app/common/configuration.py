@@ -29,3 +29,5 @@ PCM_DATABASE               = config("PCM_DATABASE", "ProCM")
 PCM_COLLECTION_USERS       = "PCM_" + config("PCM_USERS", "Users")
 PCM_COLLECTION_PROJECTS    = "PCM_" + config("PCM_ARTICLES", "Projects")
 PCM_COLLECTION_POSTS       = "PCM_" + config("PCM_DISCUSSIONS", "Posts")
+
+REGISTRATION_ENABLED: bool = config("REGISTRATION", "false").lower() == "true"

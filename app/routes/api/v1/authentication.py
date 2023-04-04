@@ -1,6 +1,7 @@
 from common.uuid import hash_password
 from flask import redirect
 from models import User
+from common.configuration import REGISTRATION_ENABLED
 
 from . import request, response, session, v1
 
@@ -49,6 +50,11 @@ async def auth_login():
 
 @v1.route("/auth/register/", methods=["POST"])
 async def auth_register():
+    if not REGISTRATION_ENABLED:
+        rsp = response(request, {"message": "REGISTRATION DISABLED"}, 403)
+        if request.referrer:
+            return redirect(request.referrer, 403, rsp)
+        return rsp
     # Argument Validation
     try:
         args = request.json
