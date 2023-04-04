@@ -12,7 +12,7 @@ app.secret_key = FLASK_SECRET
 app.permanent_session_lifetime = timedelta(minutes=FLASK_SESSION_LIFETIME)
 
 app.wsgi_app = SassMiddleware(
-    app.wsgi_app, {__name__: ("static/sass", "static/css", "static/css/")}
+    app.wsgi_app, {__name__: ("static/sass", "static/css", "static/css/", False)}
 )
 
 Markdown(app)
