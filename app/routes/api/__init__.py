@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-api = Blueprint("api", __name__)
+v1 = Blueprint("APIv1", __name__)
 
 
-from .example import *
+from .v1 import *
