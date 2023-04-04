@@ -7,36 +7,19 @@
     >
   </div>
   <div class="d-flex justify-content-center py-5">
-    <div
-      id="login-card"
-      class="card text-bg-dark mb-3"
-      style="max-width: 48vh; min-width: 48vh"
-    >
-      <div class="card-header">Login</div>
+    {% if authtype == "login" %}
+    <div class="card">
       <div class="card-body">
-        <form method="post" action="/api/v1/auth/login">
-          <div class="mb-3">
-            <label for="Username" class="form-label">Username</label>
-            <input
-              type="text"
-              class="form-control"
-              id="Username"
-              name="username"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="Password" class="form-label">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              id="Password"
-              name="password"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
+        <h4 class="card-title">Login</h4>
       </div>
     </div>
+    {% else %}
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Register</h4>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </main>
 {% endblock %}
