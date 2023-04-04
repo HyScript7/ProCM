@@ -11,9 +11,17 @@ async def root():
         "admin/index.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR
     )
 
-@admin.route("/login")
+
+@admin.route("/auth")
 async def login():
-    login_page = request.args.get("login", False) # Basically, if ?login is at the end of the URL, we render login, otherwise register
+    login_page = request.args.get(
+        "login", False
+    )  # Basically, if ?login is at the end of the URL, we render login, otherwise register
     return render_template(
-        "admin/auth.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR, authtype="login" if login_page else "register"
+        "admin/auth.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        authtype="login" if login_page else "register",
     )
