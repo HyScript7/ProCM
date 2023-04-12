@@ -16,6 +16,10 @@ async def auth_logout():
     for key in ["token", "username"]:
         if key in session:
             session.pop(key)
+    rsp = response(request, {"message": "SIGNED OUT"}, 200)
+    if request.referrer:
+        return redirect(request.referrer if not "/auth" in request.referrer else "/")
+    return rsp
 
 
 @v1.route("/auth/login/", methods=["POST"])
