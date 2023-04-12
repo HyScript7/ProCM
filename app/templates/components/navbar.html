@@ -1,40 +1,42 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <img
-      src="/static/img/logo.png"
-      alt="Logo"
-      width="30"
-      height="30"
-      class="img-fluid d-inline-block"
-    />
+    <img src="/static/img/logo.png" alt="Logo" width="30" height="30" class="img-fluid d-inline-block" />
     <a class="navbar-brand" href="#">ProCM</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarText"
-      aria-controls="navbarText"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% for link in navbar %}
         <li class="nav-item">
-          <a
-            class="nav-link{{' disabled' if not link[2]}}{{' active' if link[0] == page}}"
-            href="{{link[1]}}"
-            >{{link[0]}}</a
-          >
+          <a class="nav-link{{' disabled' if not link[2]}}{{' active' if link[0] == page}}"
+            href="{{link[1]}}">{{link[0]}}</a>
         </li>
         {% endfor %}
       </ul>
       <span class="navbar-text">
-        {% if not session['token'] %}
-        <a href="/auth/login" class="link-primary">Sign in</a>
-        {% else %} {{session['username']}} {% endif %}
+        <div class="dropdown">
+          <a class="dropdown-toggle text-decoration-none" href="#" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            {% if not session['token'] %} Sign in {% else %}
+            {{session['username']}} {% endif %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark w-100 dropdown-menu-end">
+            {% if not session['token'] %}
+            <li><a class="dropdown-item" href="/auth/login">Login</a></li>
+            <li><a class="dropdown-item" href="/auth/register">Register</a></li>
+            {% else %}
+            <li>
+              <!--
+                <a class="dropdown-item" href="/user/{{session['username']}}">My Profile</a>
+              -->
+              <a class="dropdown-item" href="/api/v1/auth/logout">Logout</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+        <!-- End Dropdown -->
       </span>
     </div>
   </div>
