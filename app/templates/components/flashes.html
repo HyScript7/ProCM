@@ -2,7 +2,7 @@
 messages %}
 <div class="alert alert-{{message.split(';')[0]}}" role="alert">
   {% for paragraph in message.split(";")[1:]%}
-  <p>{{paragraph}}</p>
+  <div>{{paragraph}}</div>
   {% endfor %}
 </div>
 {% endfor %} {% endif %} {% endwith %}
