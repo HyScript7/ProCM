@@ -22,3 +22,7 @@ for blueprint, prefix in routes:
         app.register_blueprint(blueprint, url_prefix=prefix)
         continue
     app.register_blueprint(blueprint)
+
+if __name__ == "__main__":
+    # Run development server
+    app.run(host="0.0.0.0", port=8000, debug=True)
