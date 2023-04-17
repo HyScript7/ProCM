@@ -9,6 +9,18 @@
     {% for url in css %}
     <link rel="stylesheet" href="{{url}}" />
     {% endfor %}
+    <style>
+      .bg-noise::before {
+        position: absolute;
+        content: "";
+        background-image: url("/static/img/noise.png");
+        background-size: 500px 500px;
+        opacity: 0.1;
+        z-index: -3;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
   </head>
 
   <body>
