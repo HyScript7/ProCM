@@ -4,6 +4,24 @@
 @import "./bootstrap/scss/mixins";
 @import "./bootstrap/scss/utilities";
 
+/*
+$primary:        $indigo-500;
+$primary-dark:   $indigo-700;
+$secondary:      $purple-500;
+$secondary-dark: $gray-600;
+*/
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warn": $warning,
+  "error": $danger,
+  "light": $light,
+  "dark": $dark,
+);
+
 $utilities: map-merge(
   $utilities,
   (
@@ -29,24 +47,6 @@ $utilities: map-merge(
         )
       ),
   )
-);
-
-/*
-$primary:        $indigo-500;
-$primary-dark:   $indigo-700;
-$secondary:      $purple-500;
-$secondary-dark: $gray-600;
-*/
-
-$theme-colors: (
-  "primary": $primary,
-  "secondary": $secondary,
-  "success": $success,
-  "info": $info,
-  "warn": $warning,
-  "error": $danger,
-  "light": $light,
-  "dark": $dark,
 );
 
 body {
