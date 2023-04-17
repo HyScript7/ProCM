@@ -46,6 +46,19 @@ $utilities: map-merge(
           responsive: true,
         )
       ),
+    "text-align":
+      map-merge(
+        map-get($utilities, "text-align"),
+        (
+          values:
+            map-merge(
+              map-get(map-get($utilities, "text-align"), "values"),
+              (
+                justify: justify,
+              )
+            ),
+        )
+      ),
   )
 );
 
@@ -56,10 +69,6 @@ body {
   background-repeat: repeat-y;
   background-attachment: scroll;
   background-position: 0px var(--scroll);
-}
-
-.text-justify {
-  text-align: justify;
 }
 
 .cookie-consent {
