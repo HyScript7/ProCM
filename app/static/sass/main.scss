@@ -50,10 +50,12 @@ $utilities: map-merge(
 );
 
 body {
-  background-image: url("/static/img/background.png");
+  --scroll: 0px;
+  background-image: url("/static/img/background.svg");
   background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-repeat: repeat-y;
+  background-attachment: scroll;
+  background-position: 0px var(--scroll);
 }
 
 .cookie-consent {
