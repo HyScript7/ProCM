@@ -1,7 +1,9 @@
+import asyncio
 from time import time
 
 from common.uuid import complex_uuid, uuid
 
+from . import Group, get_default_group_id
 from .database import DB_USERS
 
 
@@ -9,7 +11,7 @@ async def get_user_document_by_filter(flt: dict) -> dict:
     doc = DB_USERS.find_one(flt)
     if doc is None:
         return {}
-    if not "id" in doc:
+    if "id" not in doc:
         return {}
     return doc
 
@@ -36,6 +38,7 @@ class User:
     password: str
     email: str
     tokens: list[str]
+    group: Group
     created: int
 
     def __init__(self, document: dict) -> None:
@@ -45,6 +48,7 @@ class User:
         self.password: str = document["password"]
         self.email: str = document["email"]
         self.tokens: list[str] = document["tokens"]
+        self.group: str = document["group"]
         self.created: int = document["created"]
 
     def dump(self) -> dict:
@@ -55,6 +59,7 @@ class User:
             "password": self.password,
             "email": self.email,
             "tokens": self.tokens,
+            "group": self.group,
             "created": self.created,
         }
 
@@ -124,14 +129,16 @@ class User:
             )
         if password == user["password"]:
             return cls(user)
-        raise ValueError(f"Incorrect password for user by the username {username}!")
+        raise ValueError(
+            f"Incorrect password for user by the username {username}!")
 
     @classmethod
     async def register(cls, username: str, password: str, email: str):
         email_check = await get_user_document_by_email(email)
         username_check = await get_user_document_by_username(username)
         if email_check != {} or username_check != {}:
-            raise ValueError("The provided username or email is already registered!")
+            raise ValueError(
+                "The provided username or email is already registered!")
         now = time()
         account = {
             "id": uuid(),
@@ -139,6 +146,7 @@ class User:
             "password": password,
             "email": email,
             "tokens": [],
+            "group": await get_default_group_id(),
             "created": now,
         }
         oid = DB_USERS.insert_one(account)
