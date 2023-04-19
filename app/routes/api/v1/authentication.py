@@ -13,9 +13,17 @@ async def auth_root():
 
 @v1.route("/auth/logout/", methods=["GET", "POST"])
 async def auth_logout():
-    for key in ["token", "username"]:
-        if key in session:
-            session.pop(key)
+    token = session.pop("token")
+    session.pop("username")
+    # Drop token
+    try:
+        user = await User.from_token(token)
+        await user.delete_token(token)
+    except ValueError as e:
+        rsp = response(
+            request, {"message": "SIGNED OUT", "error": str(e)}, 200)
+        return rsp
+    # Send response
     rsp = response(request, {"message": "SIGNED OUT"}, 200)
     if request.referrer:
         return redirect(request.referrer if not "/auth" in request.referrer else "/")
