@@ -1,0 +1,16 @@
+{% extends "index.html" %} {% block content %} {% include
+"components/navbar.html" %}{% include "components/flashes.html" %}
+<br />
+<div class="container-fluid">
+  <p>{{username}}</p>
+  <p>{{group}}</p>
+  <p>{{regdate}}</p>
+  <div>Comments:</div>
+  <ul>
+    {% for comment in comments %}
+    <li>{{comment}}</li>
+    {% endfor %}
+  </ul>
+</div>
+<br />
+{% include "components/footer.html" %} {% endblock %}
