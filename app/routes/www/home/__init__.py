@@ -12,7 +12,7 @@ from .. import www
 @www.route("/")
 async def root():
     return render_template(
-        "home/index.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR
+        "home/index.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR, page="Home"
     )
 
 
@@ -31,6 +31,7 @@ async def auth(page: str):
         js=JS,
         navbar=NAVBAR,
         authtype="login" if login_page else "register",
+        page="Auth",
     )
 
 
@@ -66,4 +67,5 @@ async def profile(username: str):
         group=group,
         regdate=regdate,
         comments=comments,
+        page="Profile",
     )
