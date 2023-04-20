@@ -8,5 +8,10 @@ from .. import admin
 @admin.route("/")
 async def root():
     return render_template(
-        "admin/index.html", hostname=HOSTNAME, css=CSS, js=JS, navbar=NAVBAR
+        "admin/index.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR + ["Admin", "/admin/", True],
+        page="Admin",
     )
