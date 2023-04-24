@@ -17,9 +17,10 @@
 ### Stránky
 
 - Home Page (Úvodní stránka)
-  - Min. 4 bloky
+  - Min. 4 bloky (Containery)
 - Projects
 - Blog
 - About
+- TOS & Privacy
 - Auth
 - Admin Panel
