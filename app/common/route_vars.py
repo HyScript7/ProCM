@@ -1,4 +1,7 @@
-CSS = ["/static/css/main.scss.css", "/static/css/icons/font/bootstrap-icons.css"]
+from .configuration import BRAND
+
+CSS = ["/static/css/main.scss.css",
+       "/static/css/icons/font/bootstrap-icons.css"]
 JS = [
     "/static/js/popper.min.js",
     "/static/js/bootstrap.min.js",

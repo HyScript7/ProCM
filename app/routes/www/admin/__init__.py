@@ -1,5 +1,5 @@
 from common.configuration import HOSTNAME
-from common.route_vars import CSS, JS, NAVBAR
+from common.route_vars import BRAND, CSS, JS, NAVBAR
 from flask import render_template
 
 from .. import admin
@@ -14,4 +14,6 @@ async def root():
         js=JS,
         navbar=NAVBAR + ["Admin", "/admin/", True],
         page="Admin",
+        brand=BRAND,
+        title="Admin",
     )

@@ -36,3 +36,6 @@ PCM_COLLECTION_COMMENTS = "PCM_" + \
     config("PCM_COLLECTION_COMMENTS", "Comments")
 
 REGISTRATION_ENABLED: bool = config("REGISTRATION", "false").lower() == "true"
+
+# Branding
+BRAND: str = config("BRAND", "ProCM")
