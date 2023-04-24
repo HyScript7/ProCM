@@ -1,16 +1,21 @@
 {% extends "index.html" %} {% block content %} {% include
 "components/navbar.html" %}{% include "components/flashes.html" %}
-<br />
-<div class="container-fluid">
-  <p>{{username}}</p>
-  <p>{{group}}</p>
-  <p>{{regdate}}</p>
-  <div>Comments:</div>
+<div class="my-3 container bg-dark rounded-bottom border-light border">
+  <div class="row">
+    <div class="col">
+      <h2>{{username}}</h2>
+    </div>
+    <div class="col">
+      <span>Role: {{group}}</span><br>
+      <span>Registered: {{regdate}}</span>
+    </div>
+  <hr>
+  </div class="row">
+  <h3>Comments</h3>
   <ul>
-    {% for comment in comments %}
+    {% for comment in comments + (0*"test;").split(";")[0:-1] %}
     <li>{{comment}}</li>
     {% endfor %}
   </ul>
 </div>
-<br />
 {% include "components/footer.html" %} {% endblock %}
