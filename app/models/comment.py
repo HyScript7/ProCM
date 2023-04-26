@@ -2,8 +2,9 @@ from time import time
 
 from common.uuid import uuid
 
-from . import Post, User
 from .database import DB_COMMENTS
+from .post import Post
+from .user import User
 
 
 async def get_comment_document_by_filter(flt: dict) -> dict:

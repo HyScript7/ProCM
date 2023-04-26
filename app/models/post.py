@@ -2,8 +2,8 @@ from time import time
 
 from common.uuid import uuid
 
-from . import User
 from .database import DB_POSTS
+from .user import User
 
 
 async def get_post_document_by_filter(flt: dict) -> dict:
