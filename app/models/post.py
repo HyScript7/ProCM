@@ -19,10 +19,14 @@ async def get_post_document_by_id(uuid: str) -> dict:
     return await get_post_document_by_filter({"id": uuid})
 
 
+async def get_post_document_by_title(title: str) -> dict:
+    return await get_post_document_by_filter({"title": title})
+
+
 async def get_post_many_documents_by_filter(
-    flt: dict, limit: int = 20, page: int = 1
+    flt: dict, limit: int = 20, page: int = 0
 ) -> list[dict]:
-    docs = DB_POSTS.find(flt).skip(page).limit(limit)
+    docs = DB_POSTS.find(flt).skip(page * limit).limit(limit)
     if docs is None:
         return []
     documents: list[dict] = []
@@ -36,7 +40,7 @@ async def get_post_many_documents_by_filter(
 
 
 async def get_post_many_documents_by_tags(
-    tags: list[str], limit_override: int = 20, page: int = 1
+    tags: list[str], limit_override: int = 20, page: int = 0
 ) -> list[dict]:
     return await get_post_many_documents_by_filter(
         {"tags": {"$in": tags}}, limit_override, page
@@ -44,7 +48,7 @@ async def get_post_many_documents_by_tags(
 
 
 async def get_post_many_documents_by_author(
-    author: str, limit_override: int = 20, page: int = 1
+    author: str, limit_override: int = 20, page: int = 0
 ) -> list[dict]:
     return await get_post_many_documents_by_filter(
         {"author": author}, limit_override, page
@@ -52,10 +56,10 @@ async def get_post_many_documents_by_author(
 
 
 async def get_post_many_documents_by_title(
-    title: str, limit_override: int = 20, page: int = 1
+    title: str, limit_override: int = 20, page: int = 0
 ) -> list[dict]:
     return await get_post_many_documents_by_filter(
-        {"title": {"$regex": f"*{title}*"}}, limit_override, page
+        {"title": {"$regex": f".*{title}.*"}}, limit_override, page
     )
 
 
