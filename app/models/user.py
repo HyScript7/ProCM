@@ -3,8 +3,8 @@ from time import time
 
 from common.uuid import complex_uuid, uuid
 
-from . import Group, get_default_group_id
 from .database import DB_USERS
+from .groups import Group, get_default_group_id
 
 
 async def get_user_document_by_filter(flt: dict) -> dict:
@@ -129,16 +129,14 @@ class User:
             )
         if password == user["password"]:
             return cls(user)
-        raise ValueError(
-            f"Incorrect password for user by the username {username}!")
+        raise ValueError(f"Incorrect password for user by the username {username}!")
 
     @classmethod
     async def register(cls, username: str, password: str, email: str):
         email_check = await get_user_document_by_email(email)
         username_check = await get_user_document_by_username(username)
         if email_check != {} or username_check != {}:
-            raise ValueError(
-                "The provided username or email is already registered!")
+            raise ValueError("The provided username or email is already registered!")
         now = time()
         account = {
             "id": uuid(),
