@@ -25,3 +25,4 @@ async def root():
     return response(request, {"message": "OK!"}, 200)
 
 from .authentication import *
+from .posts import *
