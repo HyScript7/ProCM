@@ -99,7 +99,7 @@ async def posts_create():
         return rsp
     # Create post
     post = await Post.new(author, title, tags, content)
-    return redirect(f"/api/v1/posts/get/{post.id}")
+    return redirect(f"/api/v2/post/get/{post.id}")
 
 
 @v1.route("/posts/delete/<uuid>", methods=["POST"])
