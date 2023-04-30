@@ -1,9 +1,11 @@
 <aside>
   <div class="container-fluid">
     <h2>Aside Panel</h2>
+    {% if logon[0] %}
     <div class="container-fluid w-100 p-0">
       {% include "components/user_card.html" %}
     </div>
+    {% endif %}
     <ol class="list-group list-group-numbered">
       <li
         class="list-group-item d-flex justify-content-between align-items-start"

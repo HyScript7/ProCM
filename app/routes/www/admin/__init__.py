@@ -1,6 +1,7 @@
 from common.configuration import HOSTNAME
 from common.route_vars import BRAND, CSS, JS, NAVBAR
-from flask import render_template
+from common.sessionparser import get_session
+from flask import render_template, session
 
 from .. import admin
 
@@ -16,4 +17,5 @@ async def root():
         page="Admin",
         brand=BRAND,
         title="Admin",
+        logon=await get_session(session),
     )

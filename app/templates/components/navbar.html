@@ -42,8 +42,8 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            {% if not session['token'] %} Sign in {% else %}
-            {{session['username']}} {% endif %}
+            {% if not logon[0] %} Sign in {% else %} {{logon[1].username}} {%
+            endif %}
           </a>
           <ul class="dropdown-menu dropdown-menu-dark w-100 dropdown-menu-end">
             {% if not session['token'] %}
@@ -51,10 +51,9 @@
             <li><a class="dropdown-item" href="/auth/register">Register</a></li>
             {% else %}
             <li>
-              <!--
-                <a class="dropdown-item" href="/user/{{session['username']}}">My Profile</a>
-              -->
-              <a class="dropdown-item" href="/user/{{username}}">Profile</a>
+              <a class="dropdown-item" href="/user/{{logon[1].username}}"
+                >Profile</a
+              >
               <a class="dropdown-item" href="/api/v1/auth/logout">Logout</a>
             </li>
             {% endif %}
