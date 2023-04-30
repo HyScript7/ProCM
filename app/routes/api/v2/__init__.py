@@ -39,4 +39,13 @@ def response(
     return rsp
 
 
+@api.route("/")
+async def auth():
+    return response(request, {}, 200, "OK")
+
+
+from .auth import *
+from .comments import *
 from .cookies import *
+from .posts import *
+from .projects import *
