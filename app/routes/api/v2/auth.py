@@ -178,3 +178,5 @@ async def auth_logout():
     await user.delete_token(token)
     session.pop("token")
     return response(request, {}, 200, "Session cleared!", redirect_path=redirect_url)
+
+# TODO: Change password route
