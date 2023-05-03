@@ -32,20 +32,47 @@ def response(
         dumps({**header, **data}), mimetype="application/json", status=status
     )
     if header["redirect"]:
-        rsp = make_response(redirect(header["redirect"], code=302, Response=rsp))
+        rsp = make_response(
+            redirect(header["redirect"], code=302, Response=rsp))
     # Set cookies
     for c_name, c_value, c_lifetime in cookies:
         rsp.set_cookie(c_name, c_value, expires=time.time() + c_lifetime)
     return rsp
 
 
+async def check_args(arg_list: dict, args: list[str]):
+    for arg in args:
+        if arg not in arg_list:
+            return False
+    return True
+
+
+async def get_args(request, args: list[str]):
+    try:
+        if await check_args(request.args, args):
+            return request.args
+    except KeyError:
+        pass
+    try:
+        if await check_args(request.form, args):
+            return request.form
+    except KeyError:
+        pass
+    try:
+        if await check_args(request.json, args):
+            return request.json
+    except KeyError:
+        pass
+    raise KeyError(
+        "None of the available sources contain all the required arguments!")
+
+
 @api.route("/")
 async def auth():
     return response(request, {}, 200, "OK")
 
-
-from .auth import *
-from .comments import *
-from .cookies import *
-from .posts import *
 from .projects import *
+from .posts import *
+from .cookies import *
+from .comments import *
+from .auth import *

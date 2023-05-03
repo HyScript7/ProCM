@@ -4,33 +4,7 @@ from common.uuid import hash_password
 from flask import flash, request, session
 from models import User
 
-from . import api, response
-
-
-async def check_args(arg_list: dict, args: list[str]):
-    for arg in args:
-        if arg not in arg_list:
-            return False
-    return True
-
-
-async def get_args(request, args: list[str]):
-    try:
-        if await check_args(request.args, args):
-            return request.args
-    except KeyError:
-        pass
-    try:
-        if await check_args(request.form, args):
-            return request.form
-    except KeyError:
-        pass
-    try:
-        if await check_args(request.json, args):
-            return request.json
-    except KeyError:
-        pass
-    raise KeyError("None of the available sources contain all the required arguments!")
+from . import api, get_args, response
 
 
 @api.route("/auth/")
@@ -178,5 +152,6 @@ async def auth_logout():
     await user.delete_token(token)
     session.pop("token")
     return response(request, {}, 200, "Session cleared!", redirect_path=redirect_url)
+
 
 # TODO: Change password route
