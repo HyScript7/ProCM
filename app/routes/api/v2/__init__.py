@@ -2,6 +2,7 @@ import time
 from json import dumps
 
 from flask import Blueprint, Request, Response, make_response, redirect
+from werkzeug.exceptions import BadRequest
 
 __version__ = 2.0
 
@@ -53,15 +54,21 @@ async def get_args(request, args: list[str]):
             return request.args
     except KeyError:
         pass
+    except BadRequest:
+        pass
     try:
         if await check_args(request.form, args):
             return request.form
     except KeyError:
         pass
+    except BadRequest:
+        pass
     try:
         if await check_args(request.json, args):
             return request.json
     except KeyError:
+        pass
+    except BadRequest:
         pass
     raise KeyError(
         "None of the available sources contain all the required arguments!")
