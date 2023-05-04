@@ -1,10 +1,9 @@
-import datetime
-
 from common.configuration import HOSTNAME
+from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from flask import redirect, render_template, session
-from models import Group
+from models import Group, get_comment_many_documents_by_author
 from models.user import User, get_user_document_by_username
 
 from .. import www
@@ -60,14 +59,8 @@ async def profile(username: str):
         return redirect("/user/")
     username = user.username
     group = (await Group.from_id(user.group)).name
-    regdate = user.created
-    regdate = datetime.datetime.fromtimestamp(regdate)
-    # Format the registration date
-    # TODO: Change this to a more effective formatting method,
-    #       because this is probably the single most inefficient
-    #       method to do it.
-    regdate = f"{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][regdate.weekday()]} {regdate.day}.{regdate.month}.{regdate.year}"
-    comments = ["WIP"]
+    regdate = parse_date(user.created)
+    comments = await get_comment_many_documents_by_author(user.id)
     return render_template(
         "home/profile.html",
         hostname=HOSTNAME,

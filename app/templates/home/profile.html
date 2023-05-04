@@ -17,7 +17,7 @@
           </div class="row">
           <h3>Comments</h3>
           <ul>
-            {% for comment in comments + (0*"test;").split(";")[0:-1] %}
+            {% for comment in comments %}
             <li>{{comment}}</li>
             {% endfor %}
           </ul>
