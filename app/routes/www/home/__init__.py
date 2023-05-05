@@ -47,9 +47,10 @@ async def auth(page: str):
 
 @www.route("/user/")
 async def profile_default():
-    if "username" not in session:
+    logon = await get_session(session)
+    if not logon:
         return redirect("/auth/login")
-    return redirect("/user/" + session["username"])
+    return redirect("/user/" + logon[1].username)
 
 
 @www.route("/user/<username>")
