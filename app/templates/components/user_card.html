@@ -3,7 +3,14 @@
     <a href="/user" class="link-dark text-decoration-none">Your profile</a>
   </div>
   <div class="card-body">
-    <h5 class="card-title">{{logon[1].username}}</h5>
-    <p class="card-text">Comments: 0</p>
+    <div class="row">
+      <div class="col">
+        <h5 class="card-title">{{logon[1].username}}</h5>
+        <p class="card-text">Comments: {{user_card.comments}}</p>
+      </div>
+      <div class="col container-fluid">
+        <img class="img-thumbnail" src="{{user_card.pfp_url}}" alt="Profile Picture" width="auto" height="100%"/>
+      </div>
+    </div>
   </div>
 </div>

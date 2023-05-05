@@ -1,11 +1,13 @@
+from base64 import b64decode
+
 from common.configuration import HOSTNAME
 from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
-from flask import redirect, render_template, session, flash
+from common.usercard import User_card
+from flask import flash, redirect, render_template, session
 from models import Post, get_post_many_documents_by_filter
 from models.user import User, get_user_document_by_id
-from base64 import b64decode
 
 from .. import www
 
@@ -67,6 +69,10 @@ async def post(id):
     except ValueError:
         flash("error;A post with this id does not exist!")
         return redirect("/blog/")
+    logon = await get_session(session)
+    user_card = None
+    if logon:
+        user_card = await User_card.get(logon[1])
     return render_template(
         "blog/post.html",
         hostname=HOSTNAME,
@@ -76,6 +82,7 @@ async def post(id):
         page=f"Blog",
         title=f"Blog - {post.title}",
         brand=BRAND,
-        logon=await get_session(session),
+        logon=logon,
+        user_card=user_card,
         post=post,
     )

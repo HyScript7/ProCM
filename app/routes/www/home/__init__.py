@@ -2,6 +2,7 @@ from common.configuration import HOSTNAME
 from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
+from common.usercard import User_card
 from flask import redirect, render_template, session
 from models import Group, get_comment_many_documents_by_author
 from models.user import User, get_user_document_by_username
@@ -11,6 +12,10 @@ from .. import www
 
 @www.route("/")
 async def root():
+    logon = await get_session(session)
+    user_card = None
+    if logon:
+        user_card = await User_card.get(logon[1])
     return render_template(
         "home/index.html",
         hostname=HOSTNAME,
@@ -19,7 +24,8 @@ async def root():
         navbar=NAVBAR,
         page="Home",
         brand=BRAND,
-        logon=await get_session(session),
+        logon=logon,
+        user_card=user_card,
     )
 
 
@@ -55,6 +61,10 @@ async def profile_default():
 
 @www.route("/user/<username>")
 async def profile(username: str):
+    logon = await get_session(session)
+    user_card = None
+    if logon:
+        user_card = await User_card.get(logon[1])
     user: User = User(await get_user_document_by_username(username))
     if user == {}:
         return redirect("/user/")
@@ -75,5 +85,6 @@ async def profile(username: str):
         page="Profile",
         brand=BRAND,
         title=username,
-        logon=await get_session(session),
+        logon=logon,
+        user_card=user_card,
     )
