@@ -19,4 +19,5 @@ async def cookies_accept():
 
 
 from .home import *
+from .blog import *
 from .admin import *
