@@ -26,7 +26,7 @@ async def get_post_document_by_title(title: str) -> dict:
 async def get_post_many_documents_by_filter(
     flt: dict, limit: int = 20, page: int = 0
 ) -> list[dict]:
-    docs = DB_POSTS.find(flt).skip(page * limit).limit(limit)
+    docs = DB_POSTS.find(flt).sort("created", 1).skip(page * limit).limit(limit)
     if docs is None:
         return []
     documents: list[dict] = []
