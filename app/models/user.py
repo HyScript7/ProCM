@@ -1,5 +1,6 @@
 import asyncio
 from time import time
+from base64 import b64encode, b64decode
 
 from common.uuid import complex_uuid, uuid
 
@@ -40,6 +41,7 @@ class User:
     tokens: list[str]
     group: Group
     created: int
+    bio: list[str]
 
     def __init__(self, document: dict) -> None:
         self.oid = document["_id"]
@@ -50,6 +52,7 @@ class User:
         self.tokens: list[str] = document["tokens"]
         self.group: str = document["group"]
         self.created: int = document["created"]
+        self.bio: list[str] = ">\n<".join(b64decode(document["bio"].encode("utf-8")).decode("utf-8").split("><")).split("\n")
 
     def dump(self) -> dict:
         return {
@@ -61,6 +64,7 @@ class User:
             "tokens": self.tokens,
             "group": self.group,
             "created": self.created,
+            "bio": b64encode("".join(self.bio).encode("utf-8")).decode("utf-8")
         }
 
     async def pull(self) -> None:
@@ -146,6 +150,7 @@ class User:
             "tokens": [],
             "group": await get_default_group_id(),
             "created": now,
+            "bio": b64encode("".join(f"<h1>Hello There!</h1><p>I am {username}, welcome to my profile!</p><p class='text-muted'>You can change your profile's bio when you're signed in by simply modifying it in the editor and clicking save.</p>").encode("utf-8")).decode("utf-8")
         }
         oid = DB_USERS.insert_one(account)
         oid = oid.inserted_id
