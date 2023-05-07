@@ -1,15 +1,22 @@
-from base64 import b64decode
+from base64 import b64decode, b64encode
 
 from common.dateparser import parse_date
 from models import Post
 from models.user import User, get_user_document_by_id
 
-def html_to_markdown(content: str):
+
+def html_to_markdown(content: str, add_a_hrefs: bool = False):
     content: list[str] = ">\n<".join(content.split("><")).split("\n")
     for i, v in enumerate(content):
         if is_title(v):
+            if add_a_hrefs:
+                content[
+                    i
+                ] = f"<a id=\"{b64encode(title_html_to_md(v).encode('utf-8')).decode('utf-8')}\"></a>{v}"
+                continue
             content[i] = title_html_to_md(v)
     return content
+
 
 def is_title(html: str):
     try:
@@ -43,6 +50,7 @@ def title_html_to_md(html: str):
             append = True
     level = int(html.replace(" ", "")[2])
     return level * "#" + " " + title_text
+
 
 class ContentTable:
     def __init__(self, content: list):
@@ -94,10 +102,17 @@ class ContentTable:
         titles = []
         for i, n in enumerate(table):
             p = f"{prefix}{i+1}"
-            titles.append([p, n, n.replace("#", "").replace(" ", "", 1)])
+            titles.append(
+                [
+                    p,
+                    "#" + b64encode(n.encode("utf-8")).decode("utf-8"),
+                    n.replace("#", "").replace(" ", "", 1),
+                ]
+            )
             if len(table[n]):
                 titles += self.simpleParse(table[n], prefix=(p + "."))
         return titles
+
 
 class parsedPost:
     def __init__(
@@ -116,6 +131,7 @@ class parsedPost:
         except UnicodeDecodeError:
             self.content: str = content
         self.table = ContentTable(html_to_markdown(self.content)).simple
+        self.content = html_to_markdown(self.content, True)
         self.tags: str = ", ".join(tags)
         self.author: User = author.get("username", "???")
         self.created: str = parse_date(created, show_time=True, time_sep_symbol="@")
