@@ -47,9 +47,25 @@
             </tbody>
           </table>
         </div>
+        <div class="text-center">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            {% for page in range(pages) %}
+            <button type="button" class="btn btn-primary">{{page+1}}</button>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-lg-3">{% include "components/sidebar.html" %}</div>
   </div>
 </div>
+<script>
+  const btnGroup = document.querySelector(".btn-group");
+  btnGroup.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const btnText = btn.textContent.trim();
+      window.location.href = `?p=${btnText}`;
+    });
+  });
+</script>
 {% include "components/footer.html" %} {% endblock %}

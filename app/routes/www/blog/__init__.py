@@ -3,7 +3,8 @@ from common.configuration import HOSTNAME
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
-from flask import flash, redirect, render_template, session
+from flask import flash, redirect, render_template, session, request
+from math import ceil
 from models import Post, get_post_many_documents_by_filter
 
 from .. import www
@@ -11,7 +12,21 @@ from .. import www
 
 @www.route("/blog/")
 async def blog():
-    posts = await get_post_many_documents_by_filter({"id": {"$exists": True}})
+    page = int(request.args.get("p", "1")) - 1
+    limit = int(request.args.get("l", "25"))
+    page_count = ceil(
+        len(
+            await get_post_many_documents_by_filter(
+                {"id": {"$exists": True}}, limit=4294967295
+            )
+        )
+        / limit
+    )
+    posts = (
+        await get_post_many_documents_by_filter(
+            {"id": {"$exists": True}}, page=page, limit=limit
+        )
+    )[::-1]
     logon = await get_session(session)
     user_card = None
     if logon:
@@ -27,7 +42,8 @@ async def blog():
         brand=BRAND,
         logon=logon,
         user_card=user_card,
-        posts=[await parsedPost.parse(post) for post in posts],
+        pages=page_count,
+        posts=[await parsedPost.parse(post) for post in posts][::-1],
     )
 
 
