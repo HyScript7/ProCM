@@ -44,3 +44,6 @@ BRAND: str = config("BRAND", "ProCM")
 GITHUB_TOKEN: str = config("GIT_TOKEN", None)
 if GITHUB_TOKEN is None:
     raise ValueError("No github token provided!")
+GITHUB_USERNAME: str = config("GIT_USERNAME", None)
+if GITHUB_USERNAME is None:
+    raise ValueError("No github username provided!")

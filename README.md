@@ -122,6 +122,7 @@ To run the server, you need a MongoDB database and python installed on your host
 | REGISTRATION            | Whether to enable registration or not (true/false)       |
 | BRAND                   | The name of the site                                     |
 | GIT_TOKEN               | The github token to fetch projects with                  |
+| GIT_USERNAME            | The github username of the account that owns the token   |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
