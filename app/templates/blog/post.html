@@ -12,7 +12,42 @@
 <div class="my-3 container-fluid">
   <div class="row">
     <div class="col-lg-9">
-      <div class="container">{{post.content | safe}}</div>
+      <div class="container">
+        <div class="float-lg-start w-50">
+          <div
+            class="table-responsive mx-2 border border-2 border-dark bg-dark-noise"
+          >
+            <table class="table border-dark border-0 text-light">
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <h2>Table of Content</h2>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <!--
+                  Begin content table title instance
+                -->
+                <tr>
+                  <td scope="row">
+                    <a
+                      class="text-decoration-none link-secondary"
+                      href="$TITLEHREF"
+                      ><div>$TITLENAME</div></a
+                    >
+                  </td>
+                  <td scope="row">$TITLENUMBER</td>
+                </tr>
+                <!--
+                  End content table title instance
+                -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <article>{{post.content | safe}}</article>
+      </div>
     </div>
     <div class="col-lg-3">{% include "components/sidebar.html" %}</div>
   </div>

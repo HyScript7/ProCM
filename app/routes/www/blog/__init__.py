@@ -1,53 +1,21 @@
-from base64 import b64decode
-
+from common.blog import parsedPost
 from common.configuration import HOSTNAME
-from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
 from flask import flash, redirect, render_template, session
 from models import Post, get_post_many_documents_by_filter
-from models.user import User, get_user_document_by_id
 
 from .. import www
-
-
-class parsedPost:
-    def __init__(
-        self,
-        id: str,
-        title: str,
-        content: str,
-        tags: list[str],
-        author: dict,
-        created: float,
-    ):
-        self.id: str = id
-        self.title: str = title
-        try:
-            self.content: str = b64decode(content.encode("utf-8")).decode("utf-8")
-        except UnicodeDecodeError:
-            self.content: str = content
-        self.tags: str = ", ".join(tags)
-        self.author: User = author.get("username", "???")
-        self.created: str = parse_date(created, show_time=True, time_sep_symbol="@")
-
-    @classmethod
-    async def parse(cls, post: dict):
-        post: Post = Post(post)
-        return cls(
-            post.id,
-            post.title,
-            post.content,
-            post.tags,
-            await get_user_document_by_id(post.author_id),
-            post.created,
-        )
 
 
 @www.route("/blog/")
 async def blog():
     posts = await get_post_many_documents_by_filter({"id": {"$exists": True}})
+    logon = await get_session(session)
+    user_card = None
+    if logon:
+        user_card = await User_card.get(logon[1])
     return render_template(
         "blog/index.html",
         hostname=HOSTNAME,
@@ -57,7 +25,8 @@ async def blog():
         page="Blog",
         title="Blog",
         brand=BRAND,
-        logon=await get_session(session),
+        logon=logon,
+        user_card=user_card,
         posts=[await parsedPost.parse(post) for post in posts],
     )
 
