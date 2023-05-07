@@ -127,7 +127,7 @@ To run the server, you need a MongoDB database and python installed on your host
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-For instructions on how to use ProCM, please reffer to the [Documentation](#)
+For instructions on how to use ProCM, please reffer to the [Documentation](https://docs.google.com/document/d/1NuqVESW1STSTG-GhvvjajzcHyAzxAaAm92JQLKchdXs/edit?usp=sharing)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
