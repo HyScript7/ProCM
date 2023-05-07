@@ -1,7 +1,7 @@
 #  Ročníková Práce
 
 - Web. stránka na téma Osobní Portfolio
-- Stránka bude zveřejněná na libovolném hostingu (třeba Honza)
+- Stránka bude zveřejněná na libovolném hostingu (Render)
 - **Odevzdávám do 4.6 23:59** ve formě **archívu 7z nebo Zip**
   - Pozdní odevzdání není omluvené ze **žádného důvodu**
 
