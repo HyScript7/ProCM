@@ -1,8 +1,8 @@
-import time
-
 from common.uuid import hash_password
+from common.xss_checker import safe_xss
 from flask import flash, request, session
 from models import User
+from models.user import get_user_document_by_id
 
 from . import api, get_args, response
 
@@ -125,7 +125,7 @@ async def auth_login():
         {"token": token},
         201,
         "Login successful",
-        redirect_path="/",
+        redirect_path="/" if redirect_url else None,
     )
 
 
@@ -155,3 +155,69 @@ async def auth_logout():
 
 
 # TODO: Change password route
+
+
+@api.route("/auth/bio/get/<id>", methods=["GET", "POST"])
+async def auth_get_bio(id):
+    redirect_url: str | None = request.referrer if request.referrer else None
+    try:
+        user = await get_user_document_by_id(id)
+        if user == {}:
+            raise ValueError("User with this ID does not exist!")
+        user = User(user)
+    except ValueError as e:
+        flash("error;" + e)
+        return response(request, {}, 400, "Error: " + e, redirect_path=redirect_url)
+    return response(
+        request,
+        {"bio": user.bio},
+        200,
+        f"Fetched Bio for {user.username}",
+        redirect_path=redirect_url,
+    )
+
+
+@api.route("/auth/bio/set", methods=["POST"])
+async def auth_set_bio():
+    redirect_url: str | None = request.referrer if request.referrer else None
+    if not session.get("token", False):
+        flash("error;You are not signed in!")
+        return response(
+            request, {}, 400, "You are not signed in!", redirect_path=redirect_url
+        )
+    token = session.get("token")
+    try:
+        user = await User.from_token(token)
+    except ValueError:
+        session.pop("token")
+        return response(
+            request,
+            {},
+            200,
+            "The provided token is invalid, session cleared!",
+            redirect_path=redirect_url,
+        )
+    try:
+        args = await get_args(request, ["bio_content"])
+    except KeyError as e:
+        flash("error;Invalid request!")
+        return response(
+            request,
+            {},
+            400,
+            "Unable to get all required arguments!",
+            redirect_path=redirect_url,
+        )
+    try:
+        user.bio = safe_xss(args.get("bio_content").replace("\r", "\n")).split("\n")
+        await user.push()
+        return response(request, {}, 200, "Bio updated!", redirect_path=redirect_url)
+    except Exception as e:
+        flash(f"error;Server error: {e}")
+        return response(
+            request,
+            {"error": str(e)},
+            500,
+            "Something went wrong trying to update the bio!",
+            redirect_path=redirect_url,
+        )
