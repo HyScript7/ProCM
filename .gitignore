@@ -10,6 +10,10 @@ app/static/css/icons/
 app/static/js/popper.min.js
 app/static/js/bootstrap.min.js
 
+# Quill.js
+app/static/js/quill.min.js
+app/static/css/quill.snow.css
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
