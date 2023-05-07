@@ -10,5 +10,5 @@ JS = [
 NAVBAR = [
     ["Home", "/", True],
     ["Projects", "/projects", False],
-    ["Blog", "/blog", False],
+    ["Blog", "/blog", True],
 ]
