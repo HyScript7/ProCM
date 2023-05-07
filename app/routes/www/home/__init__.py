@@ -68,18 +68,20 @@ async def profile(username: str):
     user_card = None
     if logon:
         user_card = await User_card.get(logon[1])
-    user: User = User(await get_user_document_by_username(username))
-    if user == {}:
+    try:
+        user: User = User(await get_user_document_by_username(username))
+    except:
         return redirect("/user/")
     username = user.username
     group = (await Group.from_id(user.group)).name
     regdate = parse_date(user.created)
     comments = await get_comment_many_documents_by_author(user.id)
+    bio = "".join(user.bio)
     return render_template(
         "home/profile.html",
         hostname=HOSTNAME,
-        css=CSS,
-        js=JS,
+        css=CSS + ["/static/css/quill.snow.css"],
+        js=JS + ["/static/js/jquery-3.6.4.slim.min.js", "/static/js/quill.min.js", "/static/js/bio_editor.js"],
         navbar=NAVBAR,
         username=username,
         group=group,
@@ -91,4 +93,5 @@ async def profile(username: str):
         logon=logon,
         user_card=user_card,
         latest_posts=await latest_posts(),
+        bio=bio
     )
