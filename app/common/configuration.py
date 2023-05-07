@@ -39,3 +39,8 @@ REGISTRATION_ENABLED: bool = config("REGISTRATION", "false").lower() == "true"
 
 # Branding
 BRAND: str = config("BRAND", "ProCM")
+
+# Projects API Token
+GITHUB_TOKEN: str = config("GIT_TOKEN", None)
+if GITHUB_TOKEN is None:
+    raise ValueError("No github token provided!")
