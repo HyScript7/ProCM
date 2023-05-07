@@ -53,5 +53,5 @@ async def post(id):
         brand=BRAND,
         logon=logon,
         user_card=user_card,
-        post=post,
+        post=await parsedPost.parse(post.dump()),
     )

@@ -12,15 +12,15 @@
 <div class="my-3 container-fluid">
   <div class="row">
     <div class="col-lg-9">
-      <div class="container">
-        <div class="float-lg-start w-50">
+      <div class="container-fluid">
+        <div class="float-lg-start" style="min-width: 30vw">
           <div
-            class="table-responsive mx-2 border border-2 border-dark bg-dark-noise"
+            class="table-responsive mx-2 border border-2 border-light bg-dark"
           >
-            <table class="table border-dark border-0 text-light">
+            <table class="table border-light border-0 text-light">
               <thead>
                 <tr>
-                  <th scope="col">
+                  <th scope="col" colspan="2">
                     <h2>Table of Content</h2>
                   </th>
                 </tr>
@@ -29,16 +29,18 @@
                 <!--
                   Begin content table title instance
                 -->
+                {% for title in post.table %}
                 <tr>
                   <td scope="row">
                     <a
-                      class="text-decoration-none link-secondary"
-                      href="$TITLEHREF"
-                      ><div>$TITLENAME</div></a
+                      class="text-decoration-none link-primary"
+                      href="{{title[1]}}"
+                      ><div>{{title[2]}}</div></a
                     >
                   </td>
-                  <td scope="row">$TITLENUMBER</td>
+                  <td scope="row">{{title[0]}}</td>
                 </tr>
+                {% endfor %}
                 <!--
                   End content table title instance
                 -->
@@ -46,7 +48,9 @@
             </table>
           </div>
         </div>
-        <article>{{post.content | safe}}</article>
+        <div class="container mb-3">
+          <article>{{post.content | safe}}</article>
+        </div>
       </div>
     </div>
     <div class="col-lg-3">{% include "components/sidebar.html" %}</div>
