@@ -1,3 +1,4 @@
+from common.blog import latest_posts
 from common.configuration import HOSTNAME
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
@@ -23,5 +24,6 @@ async def root():
         brand=BRAND,
         title="Admin",
         logon=logon,
+        latest_posts=await latest_posts(),
         user_card=user_card,
     )

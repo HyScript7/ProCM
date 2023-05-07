@@ -1,10 +1,11 @@
-from common.blog import parsedPost
+from math import ceil
+
+from common.blog import latest_posts, parsedPost
 from common.configuration import HOSTNAME
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
-from flask import flash, redirect, render_template, session, request
-from math import ceil
+from flask import flash, redirect, render_template, request, session
 from models import Post, get_post_many_documents_by_filter
 
 from .. import www
@@ -42,6 +43,7 @@ async def blog():
         brand=BRAND,
         logon=logon,
         user_card=user_card,
+        latest_posts=await latest_posts(),
         pages=page_count,
         posts=[await parsedPost.parse(post) for post in posts][::-1],
     )
@@ -68,6 +70,7 @@ async def post(id):
         title=f"Blog - {post.title}",
         brand=BRAND,
         logon=logon,
+        latest_posts=await latest_posts(),
         user_card=user_card,
         post=await parsedPost.parse(post.dump()),
     )

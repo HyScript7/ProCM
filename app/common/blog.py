@@ -1,7 +1,7 @@
 from base64 import b64decode, b64encode
 
 from common.dateparser import parse_date
-from models import Post
+from models import Post, get_post_many_documents_by_filter
 from models.user import User, get_user_document_by_id
 
 
@@ -147,3 +147,55 @@ class parsedPost:
             await get_user_document_by_id(post.author_id),
             post.created,
         )
+
+
+class latestPost(parsedPost):
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        content: str,
+        tags: list[str],
+        author: dict,
+        created: float,
+    ):
+        super().__init__(id, title, content, tags, author, created)
+        self.content = self.parse_content(self.content)
+        self.content = "".join(self.content)
+        if len(self.content) >= 64:
+            self.preview = self.content[0:64] + "..."
+        else:
+            self.preview = self.content[0 : len(self.content)] + "..."
+
+    def parse_content(self, content: list[str]) -> list[str]:
+        try:
+            content = b64decode(content.encode("utf-8")).decode("utf-8")
+            content = ">\n<".join(content.split("><")).split("\n")
+        except:
+            pass
+        for i, v in enumerate(content):
+            if v.startswith("<a") and v.endswith("</a>"):
+                content[i] = ""
+            content[i] = self.remove_tag(v) + " "
+        return content
+
+    def remove_tag(self, html: str) -> str:
+        is_open: bool = False
+        nhtml = ""
+        for token in html:
+            if token == ">" and is_open:
+                is_open = False
+                continue
+            if token == "<":
+                is_open = True
+                continue
+            if is_open:
+                continue
+            nhtml += token
+        return nhtml
+
+
+async def latest_posts() -> list[parsedPost]:
+    posts = await get_post_many_documents_by_filter({"id": {"$exists": True}}, limit=5)
+    posts = [await latestPost.parse(post) for post in posts]
+    return posts

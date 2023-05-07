@@ -7,30 +7,16 @@
     </div>
     {% endif %}
     <ol class="list-group list-group-numbered">
+      {% for post in latest_posts %}
       <li
         class="list-group-item d-flex justify-content-between align-items-start"
       >
         <div class="ms-2 me-auto">
-          <div class="fw-bold">Subheading</div>
-          Content for list item
+          <div class="fw-bold"><a href="/blog/post/{{post.id}}">{{post.title}}</a></div>
+          {{post.preview}}
         </div>
       </li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-start"
-      >
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">Subheading</div>
-          Content for list item
-        </div>
-      </li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-start"
-      >
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">Subheading</div>
-          Content for list item
-        </div>
-      </li>
+      {% endfor %}
     </ol>
   </div>
 </aside>

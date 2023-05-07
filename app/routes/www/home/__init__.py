@@ -1,3 +1,4 @@
+from common.blog import latest_posts
 from common.configuration import HOSTNAME
 from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
@@ -25,6 +26,7 @@ async def root():
         page="Home",
         brand=BRAND,
         logon=logon,
+        latest_posts=await latest_posts(),
         user_card=user_card,
     )
 
@@ -48,6 +50,7 @@ async def auth(page: str):
         brand=BRAND,
         title="Sign in" if login_page else "Sign up",
         logon=await get_session(session),
+        latest_posts=await latest_posts(),
     )
 
 
@@ -87,4 +90,5 @@ async def profile(username: str):
         title=username,
         logon=logon,
         user_card=user_card,
+        latest_posts=await latest_posts(),
     )
