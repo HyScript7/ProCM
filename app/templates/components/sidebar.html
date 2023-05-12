@@ -5,6 +5,17 @@
     <div class="container-fluid w-100 p-0">
       {% include "components/user_card.html" %}
     </div>
+    {% endif %} {% if not latest_posts %}
+    <ul class="list-group list-group">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-start"
+      >
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">No blog posts avabiable</div>
+          There is nothing here yet...
+        </div>
+      </li>
+    </ul>
     {% endif %}
     <ol class="list-group list-group-numbered">
       {% for post in latest_posts %}
@@ -12,7 +23,9 @@
         class="list-group-item d-flex justify-content-between align-items-start"
       >
         <div class="ms-2 me-auto">
-          <div class="fw-bold"><a href="/blog/post/{{post.id}}">{{post.title}}</a></div>
+          <div class="fw-bold">
+            <a href="/blog/post/{{post.id}}">{{post.title}}</a>
+          </div>
           {{post.preview}}
         </div>
       </li>
