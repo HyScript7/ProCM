@@ -1,11 +1,11 @@
-import asyncio
+from base64 import b64decode, b64encode
+from random import choice
 from time import time
-from base64 import b64encode, b64decode
 
-from common.uuid import complex_uuid, uuid
+from common.uuid import complex_uuid, hash_password, uuid
 
 from .database import DB_USERS
-from .groups import Group, get_default_group_id
+from .groups import Group, get_admin_group_id, get_default_group_id
 
 
 async def get_user_document_by_filter(flt: dict) -> dict:
@@ -52,7 +52,9 @@ class User:
         self.tokens: list[str] = document["tokens"]
         self.group: str = document["group"]
         self.created: int = document["created"]
-        self.bio: list[str] = ">\n<".join(b64decode(document["bio"].encode("utf-8")).decode("utf-8").split("><")).split("\n")
+        self.bio: list[str] = ">\n<".join(
+            b64decode(document["bio"].encode("utf-8")).decode("utf-8").split("><")
+        ).split("\n")
 
     def dump(self) -> dict:
         return {
@@ -64,7 +66,7 @@ class User:
             "tokens": self.tokens,
             "group": self.group,
             "created": self.created,
-            "bio": b64encode("".join(self.bio).encode("utf-8")).decode("utf-8")
+            "bio": b64encode("".join(self.bio).encode("utf-8")).decode("utf-8"),
         }
 
     async def pull(self) -> None:
@@ -150,9 +152,25 @@ class User:
             "tokens": [],
             "group": await get_default_group_id(),
             "created": now,
-            "bio": b64encode("".join(f"<h1>Hello There!</h1><p>I am {username}, welcome to my profile!</p><p class='text-muted'>You can change your profile's bio when you're signed in by simply modifying it in the editor and clicking save.</p>").encode("utf-8")).decode("utf-8")
+            "bio": b64encode(
+                "".join(
+                    f"<h1>Hello There!</h1><p>I am {username}, welcome to my profile!</p><p class='text-muted'>You can change your profile's bio when you're signed in by simply modifying it in the editor and clicking save.</p>"
+                ).encode("utf-8")
+            ).decode("utf-8"),
         }
         oid = DB_USERS.insert_one(account)
         oid = oid.inserted_id
         account["_id"] = oid
         return cls(account)
+
+
+async def create_default_admin():
+    user = await get_user_document_by_username("admin")
+    if user != {}:
+        return
+    chars = list(set(complex_uuid()))
+    password = "".join([choice(chars) for i in range(64)])
+    print("Creating a new admin account with the following password: " + password)
+    user = await User.register("admin", hash_password(password), "")
+    user.group = await get_admin_group_id()
+    await user.push()

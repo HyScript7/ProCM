@@ -1,8 +1,10 @@
+import asyncio
 from datetime import timedelta
 
 from common.configuration import FLASK_SECRET, FLASK_SESSION_LIFETIME
 from flask import Flask
 from flaskext.markdown import Markdown
+from models.user import create_default_admin
 from routes import routes
 from sassutils.wsgi import SassMiddleware
 
@@ -22,6 +24,8 @@ for blueprint, prefix in routes:
         app.register_blueprint(blueprint, url_prefix=prefix)
         continue
     app.register_blueprint(blueprint)
+
+asyncio.run(create_default_admin())
 
 if __name__ == "__main__":
     # Run development server
