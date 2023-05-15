@@ -41,7 +41,7 @@ async def dashboard():
     """
     logon = await get_session(session)
     if not (await check_session_and_permissions(logon)):
-        flash("error;You are not authorised to access this page!")
+        flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
     return render_template(
         "admin/dash.html",
@@ -63,7 +63,7 @@ async def users():
     """
     logon = await get_session(session)
     if not (await check_session_and_permissions(logon)):
-        flash("error;You are not authorised to access this page!")
+        flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
     return render_template(
         "admin/users.html",
@@ -85,7 +85,7 @@ async def blog():
     """
     logon = await get_session(session)
     if not (await check_session_and_permissions(logon)):
-        flash("error;You are not authorised to access this page!")
+        flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
     return render_template(
         "admin/blog.html",
@@ -107,7 +107,7 @@ async def projects():
     """
     logon = await get_session(session)
     if not (await check_session_and_permissions(logon)):
-        flash("error;You are not authorised to access this page!")
+        flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
     return render_template(
         "admin/projects.html",
