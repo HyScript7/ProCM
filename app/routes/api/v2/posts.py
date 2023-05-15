@@ -1,6 +1,7 @@
 import base64
 
 from common.sessionparser import get_session
+from common.xss_checker import safe_xss
 from flask import request, session
 from models import Group, Post, User, get_post_many_documents_by_filter
 
@@ -86,7 +87,7 @@ async def post_fetch():
 @api.route("/post/create/", methods=["GET", "POST"])
 async def post_create():
     redirect_url: str | None = request.referrer if request.referrer else None
-    # Get filter settings
+    # Verify required args are present
     try:
         args = await get_args(request, ["title", "tags", "content"])
     except KeyError as e:
@@ -124,7 +125,7 @@ async def post_create():
         args.get("tags", "").replace(", ", ",").replace(" ,", ",").split(",")
     )
     content: str = base64.b64encode(
-        args.get("content", "No content").encode("utf-8")
+        safe_xss(args.get("content", "<p>No content</p>")).encode("utf-8")
     ).decode("utf-8")
     # Server-side argument check
     if len(title) < 3 or not len(content):
