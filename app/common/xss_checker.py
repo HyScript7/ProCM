@@ -1,9 +1,10 @@
-def safe_xss(html: str):
-    return (
-        html.replace("<script", "begin script")
-        .replace("</script>", "end script")
-        .replace("<iframe", "begin iframe")
-        .replace("</iframe>", "end iframe")
-        .replace("<frame", "begin frame")
-        .replace("</frame>", "end frame")
-    )
+from bs4 import BeautifulSoup
+
+def safe_xss(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    for tag in ["script", "iframe", "frame", "style", "link", "meta"]:
+        for match in soup.find_all(tag):
+            match.decompose()
+    
+    return str(soup)
