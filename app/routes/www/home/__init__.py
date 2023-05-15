@@ -81,7 +81,7 @@ async def profile(username: str):
         "home/profile.html",
         hostname=HOSTNAME,
         css=CSS + ["/static/css/quill.snow.css"],
-        js=JS + ["/static/js/jquery-3.6.4.slim.min.js", "/static/js/quill.min.js", "/static/js/bio_editor.js"],
+        js=JS + ["/static/js/jquery-3.6.4.slim.min.js", "/static/js/quill.min.js", "/static/js/quill_editor.js"],
         navbar=NAVBAR,
         username=username,
         group=group,
