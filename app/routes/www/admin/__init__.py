@@ -1,4 +1,5 @@
 from common.configuration import HOSTNAME
+from common.administration import DashboardData
 from common.route_vars import BRAND, CSS, JS
 from common.sessionparser import get_session
 from flask import flash, redirect, render_template, session
@@ -53,6 +54,7 @@ async def dashboard():
         brand=BRAND,
         title="Admin",
         logon=logon,
+        dash=DashboardData()
     )
 
 
