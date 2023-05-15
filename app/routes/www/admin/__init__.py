@@ -25,9 +25,9 @@ async def root():
 async def check_session_and_permissions(logon: list | bool):
     if logon:
         logon[1]: User
-        logon.append(Group.from_id(logon[1].group))
-        logon[2]: Group
-        if not logon[2].permissions.get("view", "admin"):
+        group = await Group.from_id(logon[1].group)
+        group: Group
+        if not group.permissions.get("view", "admin"):
             return False
     else:
         return False
@@ -40,7 +40,7 @@ async def dashboard():
     Dashboard
     """
     logon = await get_session(session)
-    if not (await check_session_and_permissions()):
+    if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorised to access this page!")
         return redirect("/auth/login")
     return render_template(
@@ -62,7 +62,7 @@ async def users():
     Users
     """
     logon = await get_session(session)
-    if not (await check_session_and_permissions()):
+    if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorised to access this page!")
         return redirect("/auth/login")
     return render_template(
@@ -84,7 +84,7 @@ async def blog():
     Blog posts
     """
     logon = await get_session(session)
-    if not (await check_session_and_permissions()):
+    if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorised to access this page!")
         return redirect("/auth/login")
     return render_template(
@@ -106,7 +106,7 @@ async def projects():
     Projects
     """
     logon = await get_session(session)
-    if not (await check_session_and_permissions()):
+    if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorised to access this page!")
         return redirect("/auth/login")
     return render_template(
