@@ -28,7 +28,7 @@ async def dashboard():
     """
     logon = await get_session(session)
     return render_template(
-        "admin/index.html",
+        "admin/dash.html",
         hostname=HOSTNAME,
         css=CSS,
         js=JS,
@@ -40,16 +40,57 @@ async def dashboard():
     )
 
 
-@admin.route("/<xany>")
-async def test(xany):
+@admin.route("/users")
+async def users():
+    """
+    Users
+    """
     logon = await get_session(session)
     return render_template(
-        "admin/index.html",
+        "admin/users.html",
         hostname=HOSTNAME,
         css=CSS,
         js=JS,
         navbar=NAVBAR,
-        page=xany.title(),
+        page="Users",
+        brand=BRAND,
+        title="Admin",
+        logon=logon,
+    )
+
+
+@admin.route("/blog")
+async def blog():
+    """
+    Blog posts
+    """
+    logon = await get_session(session)
+    return render_template(
+        "admin/blog.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        page="Blog",
+        brand=BRAND,
+        title="Admin",
+        logon=logon,
+    )
+
+
+@admin.route("/projects")
+async def projects():
+    """
+    Projects
+    """
+    logon = await get_session(session)
+    return render_template(
+        "admin/projects.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        page="Projects",
         brand=BRAND,
         title="Admin",
         logon=logon,
