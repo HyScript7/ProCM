@@ -15,6 +15,17 @@ NAVBAR = [
 
 @admin.route("/")
 async def root():
+    """
+    Dashboard Redirect
+    """
+    return redirect("/admin/dashboard")
+
+
+@admin.route("/dashboard")
+async def dashboard():
+    """
+    Dashboard
+    """
     logon = await get_session(session)
     return render_template(
         "admin/index.html",
@@ -28,10 +39,6 @@ async def root():
         logon=logon,
     )
 
-
-@admin.route("/dashboard/")
-async def dash():
-    return redirect("/admin/")
 
 @admin.route("/<xany>")
 async def test(xany):
