@@ -68,9 +68,9 @@ async def auth_register():
     try:
         user = await User.register(username, hash_password(password), email)
     except ValueError as e:
-        flash("error;" + e)
+        flash("error;" + str(e))
         return response(
-            request, {}, 400, "Unable to register: " + e, redirect_path=redirect_url
+            request, {}, 400, "Unable to register: " + str(e), redirect_path=redirect_url
         )
     return response(
         request,
@@ -114,9 +114,9 @@ async def auth_login():
     try:
         user = await User.login(username, hash_password(password))
     except ValueError as e:
-        flash("error;" + e)
+        flash("error;" + str(e))
         return response(
-            request, {}, 400, "Unable to login: " + e, redirect_path=redirect_url
+            request, {}, 400, "Unable to login: " + str(e), redirect_path=redirect_url
         )
     token = await user.create_token()
     session["token"] = token
@@ -166,8 +166,8 @@ async def auth_get_bio(id):
             raise ValueError("User with this ID does not exist!")
         user = User(user)
     except ValueError as e:
-        flash("error;" + e)
-        return response(request, {}, 400, "Error: " + e, redirect_path=redirect_url)
+        flash("error;" + str(e))
+        return response(request, {}, 400, "Error: " + str(e), redirect_path=redirect_url)
     return response(
         request,
         {"bio": user.bio},
