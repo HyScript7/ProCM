@@ -198,7 +198,7 @@ async def auth_set_bio():
             redirect_path=redirect_url,
         )
     try:
-        args = await get_args(request, ["bio_content"])
+        args = await get_args(request, ["content"])
     except KeyError as e:
         flash("error;Invalid request!")
         return response(
@@ -209,7 +209,7 @@ async def auth_set_bio():
             redirect_path=redirect_url,
         )
     try:
-        user.bio = safe_xss(args.get("bio_content").replace("\r", "\n")).split("\n")
+        user.bio = safe_xss(args.get("content").replace("\r", "\n")).split("\n")
         await user.push()
         return response(request, {}, 200, "Bio updated!", redirect_path=redirect_url)
     except Exception as e:

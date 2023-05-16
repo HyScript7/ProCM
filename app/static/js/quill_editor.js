@@ -8,7 +8,7 @@ $(document).ready(function () {
     var hvalue = $(".ql-editor").html();
     hvalue = hvalue.replace(/></g, ">\n<");
     $(this).append(
-      "<textarea name='bio_content' style='display:none'>" +
+      "<textarea name='content' style='display:none'>" +
         hvalue +
         "</textarea>"
     );
