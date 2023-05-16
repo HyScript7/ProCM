@@ -19,6 +19,9 @@
       >
         <i class="bi {{ni[1]}}"></i>
         {{ni[0]}}
+        {% if page == ni[0] %}
+        <i class="bi bi-caret-left"></i>
+        {% endif %}
       </a>
     </li>
     {% endfor %}
