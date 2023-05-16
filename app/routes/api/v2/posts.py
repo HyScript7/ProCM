@@ -2,7 +2,7 @@ import base64
 
 from common.sessionparser import get_session
 from common.xss_checker import safe_xss
-from flask import request, session
+from flask import request, session, flash
 from models import Group, Post, User, get_post_many_documents_by_filter
 
 from . import api, get_args, response
@@ -91,6 +91,7 @@ async def post_create():
     try:
         args = await get_args(request, ["title", "tags", "content"])
     except KeyError as e:
+        flash("error;Argument Error: You must provide a title, tags and content.")
         return response(
             request,
             {"error": str(e)},
@@ -101,6 +102,7 @@ async def post_create():
     # Get authentication
     logon = await get_session(session)
     if not logon:
+        flash("error;Permission Error: You are not signed in!")
         return response(
             request,
             {},
@@ -112,11 +114,138 @@ async def post_create():
     # Verify permissions
     perms = await Group.from_id(author.group)
     if not perms.permissions.get("create", "post"):
+        flash("error;Permission Error: You are not authorized to create posts")
         return response(
             request,
             {},
             401,
             "Missing Permissions: You cannot create a post!",
+            redirect_path=redirect_url,
+        )
+    # Get post data
+    title: str = args.get("title", "Untitled")
+    tags: list[str] = (
+        args.get("tags", "").replace(", ", ",").replace(" ,", ",").split(",")
+    )
+    content: str = base64.b64encode(
+        safe_xss(args.get("content", "<p>No content</p>")).encode("utf-8")
+    ).decode("utf-8")
+    # Server-side argument check
+    if len(title) < 3 or not len(content):
+        flash("error;Content Error: The title or content are too short!")
+        return response(
+            request,
+            {
+                "errors": {
+                    "title_too_short": len(title) < 3,
+                    "content_too_short": not len(content),
+                }
+            },
+            400,
+            "Invalid arguments",
+            redirect_path=redirect_url,
+        )
+    # Insert post into DB
+    post = await Post.new(author, title, tags, content)
+    # Return ok message or redirect to post
+    flash(f"success;Post {post.title} ({post.id}) created!")
+    return response(
+        request, {"post_id": post.id}, 200, "OK", redirect_path=redirect_url
+    )
+
+
+@api.route("/post/delete/<id>", methods=["GET", "POST"])
+async def post_delete(id):
+    redirect_url: str | None = request.referrer if request.referrer else None
+    # Get authentication
+    logon = await get_session(session)
+    if not logon:
+        flash("error;Permission Error: You are not signed in!")
+        return response(
+            request,
+            {},
+            401,
+            "You must sign in to perform this action!",
+            redirect_path=redirect_url,
+        )
+    author: User = logon[1]
+    # Verify permissions
+    perms = await Group.from_id(author.group)
+    if not perms.permissions.get("delete", "post"):
+        flash("error;Permission Error: You are not authorized to delete posts")
+        return response(
+            request,
+            {},
+            401,
+            "Missing Permissions: You cannot delete a post!",
+            redirect_path=redirect_url,
+        )
+    # Fetch post from DB
+    try:
+        post = await Post.fetch(id)
+    except ValueError as e:
+        flash("error;Invalid ID: Cannot delete non-existent post")
+        return response(
+            request,
+            {"error": str(e)},
+            404,
+            "Post not found",
+            redirect_path=redirect_url,
+        )
+    await post.delete()
+    # Return ok message or redirect
+    flash(f"success;Post {post.title} ({post.id}) deleted!")
+    return response(request, {}, 200, "OK", redirect_path=redirect_url)
+
+
+@api.route("/post/edit/<uuid>/", methods=["GET", "POST"])
+async def post_edit(uuid: str):
+    redirect_url: str | None = request.referrer if request.referrer else None
+    # Verify required args are present
+    try:
+        args = await get_args(request, ["title", "tags", "content"])
+    except KeyError as e:
+        flash("error;Argument Error: You must provide a title, tags and content.")
+        return response(
+            request,
+            {"error": str(e)},
+            400,
+            "Invalid arguments",
+            redirect_path=redirect_url,
+        )
+    # Get authentication
+    logon = await get_session(session)
+    if not logon:
+        flash("error;Permission Error: You are not signed in!")
+        return response(
+            request,
+            {},
+            401,
+            "You must sign in to perform this action!",
+            redirect_path=redirect_url,
+        )
+    author: User = logon[1]
+    # Verify permissions
+    perms = await Group.from_id(author.group)
+    if not perms.permissions.get("manage", "post"):
+        flash("error;Permission Error: You are not authorized to manage posts")
+        return response(
+            request,
+            {},
+            401,
+            "Missing Permissions: You cannot create a post!",
+            redirect_path=redirect_url,
+        )
+    # Check if post exists
+    try:
+        post = await Post.fetch(uuid)
+    except ValueError:
+        flash("error;Invalid ID: Cannot update post")
+        return response(
+            request,
+            {},
+            400,
+            "Argument Error: A post with this ID does not exist in the database!",
             redirect_path=redirect_url,
         )
     # Get post data
@@ -141,61 +270,13 @@ async def post_create():
             "Invalid arguments",
             redirect_path=redirect_url,
         )
-    # Insert post into DB
-    post = await Post.new(author, title, tags, content)
+    # Update post
+    post.content = content
+    post.title = title
+    post.tags = tags
+    await post.push()
     # Return ok message or redirect to post
+    flash(f"success;Post {post.title} ({post.id}) edited!")
     return response(
         request, {"post_id": post.id}, 200, "OK", redirect_path=redirect_url
     )
-
-
-@api.route("/post/delete/<id>", methods=["GET", "POST"])
-async def post_delete(id):
-    redirect_url: str | None = request.referrer if request.referrer else None
-    # Get authentication
-    logon = await get_session(session)
-    if not logon:
-        return response(
-            request,
-            {},
-            401,
-            "You must sign in to perform this action!",
-            redirect_path=redirect_url,
-        )
-    author: User = logon[1]
-    # Verify permissions
-    perms = await Group.from_id(author.group)
-    if not perms.permissions.get("delete", "post"):
-        return response(
-            request,
-            {},
-            401,
-            "Missing Permissions: You cannot delete a post!",
-            redirect_path=redirect_url,
-        )
-    # Fetch post from DB
-    try:
-        post = await Post.fetch(id)
-    except ValueError as e:
-        return response(
-            request,
-            {"error": str(e)},
-            404,
-            "Post not found",
-            redirect_path=redirect_url,
-        )
-    await post.delete()
-    # Return ok message or redirect
-    return response(request, {}, 200, "OK", redirect_path=redirect_url)
-
-
-@api.route("/post/edit/")
-async def post_edit():
-    redirect_url: str | None = request.referrer if request.referrer else None
-    # Get arguments (post id, post title, tags, content)
-    # Get authentication
-    # Verify permissions
-    # Server-side argument check
-    # Update post in DB
-    # Return ok message or redirect to post
-    return response(request, {}, 200, "OK", redirect_path=redirect_url)
