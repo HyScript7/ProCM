@@ -3,7 +3,8 @@ from math import ceil
 from common.administration import DashboardData, PostEditor
 from common.blog import parsedPost
 from common.configuration import HOSTNAME
-from common.route_vars import BRAND, CSS, JS
+from common.route_vars import BRAND, CSS
+from common.route_vars import JS as _JS
 from common.sessionparser import get_session
 from flask import flash, redirect, render_template, request, session
 from models import Group, Post, User, get_post_many_documents_by_filter
@@ -16,6 +17,8 @@ NAVBAR = [
     ("Blog", "bi-file-earmark-richtext", "/admin/blog"),
     ("Projects", "bi-journal", "/admin/projects"),
 ]
+
+JS = _JS + ["/static/js/jquery-3.6.4.slim.min.js", "/static/js/redirect_buttons.js"]
 
 
 @admin.route("/")
@@ -38,7 +41,7 @@ async def check_session_and_permissions(logon: list | bool):
     return True
 
 
-@admin.route("/dashboard")
+@admin.route("/dashboard/")
 async def dashboard():
     """
     Dashboard
@@ -61,7 +64,7 @@ async def dashboard():
     )
 
 
-@admin.route("/users")
+@admin.route("/users/")
 async def users():
     """
     Users
@@ -83,7 +86,7 @@ async def users():
     )
 
 
-@admin.route("/blog")
+@admin.route("/blog/")
 async def blog():
     """
     Blog posts
@@ -122,7 +125,7 @@ async def blog():
     )
 
 
-@admin.route("/blog/edit/<uuid>")
+@admin.route("/blog/edit/<uuid>/")
 async def blog_editor(uuid: str):
     """
     Blog post editor
@@ -150,7 +153,6 @@ async def blog_editor(uuid: str):
         css=CSS + ["/static/css/quill.snow.css"],
         js=JS
         + [
-            "/static/js/jquery-3.6.4.slim.min.js",
             "/static/js/quill.min.js",
             "/static/js/quill_editor.js",
         ],
@@ -163,7 +165,7 @@ async def blog_editor(uuid: str):
     )
 
 
-@admin.route("/projects")
+@admin.route("/projects/")
 async def projects():
     """
     Projects
