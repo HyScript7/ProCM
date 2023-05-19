@@ -2,7 +2,7 @@ from base64 import b64decode, b64encode
 from time import time
 
 from common.xss_checker import safe_xss
-from models.database import DB_COMMENTS, DB_GROUPS, DB_POSTS, DB_PROJECTS, DB_USERS
+from models.database import DB_COMMENTS, DB_POSTS, DB_PROJECTS, DB_USERS, DB_PAGES
 from models.post import Post
 
 
@@ -11,6 +11,7 @@ class DashboardData:
     post_count: int
     comment_count: int
     project_count: int
+    page_count: int
     updated: float
 
     def __init__(self) -> None:
@@ -18,6 +19,7 @@ class DashboardData:
         self.post_count = DB_POSTS.count_documents({"id": {"$exists": True}})
         self.comment_count = DB_COMMENTS.count_documents({"id": {"$exists": True}})
         self.project_count = DB_PROJECTS.count_documents({"id": {"$exists": True}})
+        self.page_count = DB_PAGES.count_documents({"id": {"$exists": True}})
         self.updated = time()
 
 
