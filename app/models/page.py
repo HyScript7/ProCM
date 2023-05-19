@@ -69,7 +69,7 @@ class Page:
             raise ValueError(
                 f"Page at the route {route} was not found in the database!"
             )
-        return cls(route)
+        return cls(page)
 
     @classmethod
     async def new(cls, route: str, content: str, deletable: bool = True):
