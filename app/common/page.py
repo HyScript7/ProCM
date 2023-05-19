@@ -11,6 +11,10 @@ class blankPage:
 
 class pageEditor:
     is_new: bool
+    id: str
+    route: str
+    can_be_deleted: bool
+    content: str
 
     def __init__(self, page: Page | blankPage, is_new: bool = False) -> None:
         self.id = page.id

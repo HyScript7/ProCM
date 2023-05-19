@@ -237,15 +237,19 @@ async def page_editor(route: str):
         page = pageEditor.new_file()
     else:
         try:
-            page = pageEditor.fetch(route)
+            page = await pageEditor.fetch(route)
         except Exception as e:
             flash(f"error;Cannot open page at {route}: {str(e)}")
             return redirect("/admin/pages")
     return render_template(
         "admin/page_editor.html",
         hostname=HOSTNAME,
-        css=CSS,
-        js=JS,
+        css=CSS + ["/static/css/quill.snow.css"],
+        js=JS
+        + [
+            "/static/js/quill.min.js",
+            "/static/js/quill_editor.js",
+        ],
         navbar=NAVBAR,
         page="Pages",
         brand=BRAND,

@@ -13,7 +13,7 @@
     {% for ni in navbar %}
     <li class="nav-item">
       <a
-        href="{{ni[2] if not page == ni[0] else '#'}}"
+        href="{{ni[2]}}"
         class="nav-link{{' active' if page == ni[0] else ' text-white'}}"
         aria-current="page"
       >
