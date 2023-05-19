@@ -23,12 +23,14 @@
             <td colspan>
               <div class="d-flex flex-inline">
                 <a href="/admin/pages/edit/{{page.route}}"
-                  ><i class="bi bi-pencil"></i></a
-                >&nbsp
-                <a href="/{{page.route}}"><i class="bi bi-eye"></i></a>&nbsp
-                <a href="/api/v2/page/delete/{{page.route}}"
-                  ><i class="bi bi-trash"></i
+                  ><i class="bi bi-pencil"></i
                 ></a>
+                &nbsp
+                <a href="/{{page.route}}"><i class="bi bi-eye"></i></a>
+                {% if page.can_be_deleted %}&nbsp
+                <a href="/api/v2/page/delete/{{page.route}}"
+                  ><i class="bi bi-trash"></i></a
+                >{% endif %}
               </div>
             </td>
           </tr>
@@ -37,7 +39,11 @@
       </table>
     </div>
     <div class="btn-group" role="group" aria-label="Create button">
-      <button type="button" class="btn btn-primary text-light" redirect-to="/admin/pages/edit/0?new=1">
+      <button
+        type="button"
+        class="btn btn-primary text-light"
+        redirect-to="/admin/pages/edit/0?new=1"
+      >
         <i class="bi bi-plus-circle"></i>&nbsp Create new page
       </button>
     </div>
