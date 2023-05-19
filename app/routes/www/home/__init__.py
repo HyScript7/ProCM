@@ -4,8 +4,8 @@ from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
-from flask import redirect, render_template, session
-from models import Group, get_comment_many_documents_by_author
+from flask import redirect, render_template, session, flash
+from models import Group, Page, get_comment_many_documents_by_author
 from models.user import User, get_user_document_by_username
 
 from .. import www
@@ -17,6 +17,7 @@ async def root():
     user_card = None
     if logon:
         user_card = await User_card.get(logon[1])
+    page = await Page.fetch("index")
     return render_template(
         "home/index.html",
         hostname=HOSTNAME,
@@ -28,6 +29,35 @@ async def root():
         logon=logon,
         latest_posts=await latest_posts(),
         user_card=user_card,
+        content=page.content
+    )
+
+@www.route("/<route>")
+async def arbitrary(route: str):
+    logon = await get_session(session)
+    user_card = None
+    if logon:
+        user_card = await User_card.get(logon[1])
+    try:
+        page = await Page.fetch(route)
+    except Exception as e:
+        flash(f"error;Unable to load page {route}: {e}")
+        return redirect("/")
+    navbar = NAVBAR.copy()
+    if not route in [i[0] for i in navbar]:
+        navbar.append([route.title(), "/" + route, True])
+    return render_template(
+        "home/page.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=navbar,
+        page=route.title(),
+        brand=BRAND,
+        logon=logon,
+        latest_posts=await latest_posts(),
+        user_card=user_card,
+        content=page.content
     )
 
 
