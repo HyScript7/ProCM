@@ -1,9 +1,8 @@
 from base64 import b64decode, b64encode
 from time import time
-
 from common.uuid import uuid
 from common.xss_checker import safe_xss
-
+from common.default_content import c_about, c_index, c_terms, c_privacy
 from .database import DB_PAGES
 
 
@@ -100,4 +99,8 @@ async def get_all_pages():
 
 
 async def create_default_pages():
-    pass
+    pages = {"index": c_index, "about": c_about, "terms": c_terms, "privacy": c_privacy}
+    for route, content in pages.items():
+        if (await get_page_document_by_route(route)) != {}:
+            continue
+        await Page.new(route, b64decode(content.encode("utf-8")).decode("utf-8"), False)
