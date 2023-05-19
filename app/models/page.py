@@ -43,7 +43,7 @@ class Page:
             "id": self.id,
             "route": self.route,
             "deletable": self.can_be_deleted,
-            "content": self.content,
+            "content": b64encode(self.content.encode("utf-8")).decode("utf-8"),
             "created": self.created,
         }
 
