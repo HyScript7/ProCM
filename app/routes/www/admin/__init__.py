@@ -7,7 +7,14 @@ from common.route_vars import BRAND, CSS
 from common.route_vars import JS as _JS
 from common.sessionparser import get_session
 from flask import flash, redirect, render_template, request, session
-from models import Group, Post, User, get_post_many_documents_by_filter
+from models import (
+    Group,
+    Page,
+    User,
+    get_all_pages,
+    get_page_document_by_route,
+    get_post_many_documents_by_filter,
+)
 
 from .. import admin
 
@@ -15,6 +22,7 @@ NAVBAR = [
     ("Dashboard", "bi-columns", "/admin/dashboard"),
     ("Users", "bi-person", "/admin/users"),
     ("Blog", "bi-file-earmark-richtext", "/admin/blog"),
+    ("Pages", "bi-file", "/admin/pages"),
     ("Projects", "bi-journal", "/admin/projects"),
 ]
 
@@ -185,3 +193,50 @@ async def projects():
         title="Admin",
         logon=logon,
     )
+
+
+@admin.route("/pages/")
+async def pages():
+    """
+    Page list
+    """
+    logon = await get_session(session)
+    if not (await check_session_and_permissions(logon)):
+        flash("error;You are not authorized to access this page!")
+        return redirect("/auth/login")
+    pages = await get_all_pages()
+    return render_template(
+        "admin/pages.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        page="Pages",
+        brand=BRAND,
+        title="Admin",
+        logon=logon,
+        pages=pages,
+    )
+
+
+@admin.route("/pages/edit/<route>/")
+async def page_editor(route: str):
+    """
+    Page Editor
+    """
+    logon = await get_session(session)
+    can_edit: bool = False
+    if logon:
+        logon[1]: User
+        group = await Group.from_id(logon[1].group)
+        group: Group
+        can_edit = group.permissions.get("manage", "page")
+    else:
+        flash("error;You are not authorized to access this page!")
+        return redirect("/auth/login")
+    if not (await check_session_and_permissions(logon) and can_edit):
+        flash("error;You are not authorized to access this page!")
+        return redirect("/admin/blog")
+    # Figure out which editor to load
+    is_new = True if request.args.get("new", None) else False
+    return str(is_new)

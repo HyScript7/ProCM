@@ -90,5 +90,12 @@ class Page:
         return cls(pagedata)
 
 
+async def get_all_pages():
+    pages = []
+    for page in DB_PAGES.find({"id": {"$exists": True}}):
+        pages.append(Page(page))
+    return pages
+
+
 async def create_default_pages():
     pass
