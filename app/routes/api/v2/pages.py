@@ -64,7 +64,7 @@ async def page_create():
         )
     route: str = args.get("route", None)
     content: str = args.get("content", None)
-    override_deletability = args.get("protected", False)
+    override_deletability = True if args.get("protected", False) else False
     if not (route or content):
         flash("error;Content Error: The route or content are improperly defined!")
         return response(
@@ -82,7 +82,7 @@ async def page_create():
     try:
         page = await Page.new(route, content)
         if override_deletability:
-            page.can_be_deleted = override_deletability
+            page.can_be_deleted = False
             await page.push()
     except Exception as e:
         flash(f"error;Page {route} could not be created: {str(e)}")
@@ -135,7 +135,7 @@ async def page_update(target_route):
             redirect_path=redirect_url,
         )
     content: str = args.get("content", None)
-    override_deletability = args.get("protected", False)
+    override_deletability = True if args.get("protected", False) else False
     if not (content):
         flash("error;Content Error: The content is improperly defined!")
         return response(
@@ -200,7 +200,7 @@ async def page_delete(route):
     try:
         page = await Page.fetch(route)
     except ValueError as e:
-        flash("error;Invalid ID: Cannot delete non-existent page")
+        flash(f"error;Could not delete {route}: A page with this route does not exist")
         return response(
             request,
             {"error": str(e)},
@@ -208,7 +208,17 @@ async def page_delete(route):
             "Page not found",
             redirect_path=redirect_url,
         )
-    await page.delete()
+    try:
+        await page.delete()
+    except TypeError as e:
+        flash(f"error;Could not delete {route}: {str(e)}")
+        return response(
+            request,
+            {"error": str(e)},
+            400,
+            "Page protected!",
+            redirect_path=redirect_url,
+        )
     # Return ok message or redirect
     flash(f"success;Page {page.route} ({page.id}) deleted!")
     return response(request, {}, 200, "OK", redirect_path=redirect_url)

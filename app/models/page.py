@@ -61,6 +61,8 @@ class Page:
     async def delete(self) -> None:
         if self.can_be_deleted:
             DB_PAGES.find_one_and_delete({"_id": self.oid})
+            return
+        raise TypeError("Cannot delete a protected page!")
 
     @classmethod
     async def fetch(cls, route):
