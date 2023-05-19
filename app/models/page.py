@@ -23,14 +23,16 @@ async def get_page_document_by_route(route: str) -> dict:
 class Page:
     id: str
     created: int
+    route: str
     can_be_deleted: bool
     content: str
 
     def __init__(self, document: dict) -> None:
         self.oid = document["_id"]
         self.id: str = document["id"]
-        self.can_be_deleted = document["deletable"]
-        self.content = safe_xss(
+        self.route: str = document["route"]
+        self.can_be_deleted: bool = document["deletable"]
+        self.content: str = safe_xss(
             b64decode(document["content"].encode("utf-8")).decode("utf-8")
         )
         self.created: int = document["created"]
@@ -39,6 +41,7 @@ class Page:
         return {
             "_id": self.oid,
             "id": self.id,
+            "route": self.route,
             "deletable": self.can_be_deleted,
             "content": self.content,
             "created": self.created,
@@ -56,7 +59,8 @@ class Page:
         DB_PAGES.find_one_and_replace({"_id": self.oid}, self.dump())
 
     async def delete(self) -> None:
-        DB_PAGES.find_one_and_delete({"_id": self.oid})
+        if self.can_be_deleted:
+            DB_PAGES.find_one_and_delete({"_id": self.oid})
 
     @classmethod
     async def fetch(cls, route):
@@ -75,6 +79,7 @@ class Page:
         now = time()
         pagedata = {
             "id": uuid(),
+            "route": route,
             "deletable": deletable,
             "content": b64encode(safe_xss(content).encode("utf-8")).decode("utf-8"),
             "created": now,
