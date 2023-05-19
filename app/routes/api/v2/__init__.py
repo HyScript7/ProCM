@@ -78,8 +78,9 @@ async def get_args(request, args: list[str]):
 async def auth():
     return response(request, {}, 200, "OK")
 
-from .projects import *
-from .posts import *
-from .cookies import *
-from .comments import *
 from .auth import *
+from .comments import *
+from .cookies import *
+from .pages import *
+from .posts import *
+from .projects import *
