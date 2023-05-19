@@ -3,18 +3,12 @@ from math import ceil
 from common.administration import DashboardData, PostEditor
 from common.blog import parsedPost
 from common.configuration import HOSTNAME
+from common.page import pageEditor
 from common.route_vars import BRAND, CSS
 from common.route_vars import JS as _JS
 from common.sessionparser import get_session
 from flask import flash, redirect, render_template, request, session
-from models import (
-    Group,
-    Page,
-    User,
-    get_all_pages,
-    get_page_document_by_route,
-    get_post_many_documents_by_filter,
-)
+from models import Group, User, get_all_pages, get_post_many_documents_by_filter
 
 from .. import admin
 
@@ -239,4 +233,23 @@ async def page_editor(route: str):
         return redirect("/admin/blog")
     # Figure out which editor to load
     is_new = True if request.args.get("new", None) else False
-    return str(is_new)
+    if is_new:
+        page = pageEditor.new_file()
+    else:
+        try:
+            page = pageEditor.fetch(route)
+        except Exception as e:
+            flash(f"error;Cannot open page at {route}: {str(e)}")
+            return redirect("/admin/pages")
+    return render_template(
+        "admin/page_editor.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        page="Pages",
+        brand=BRAND,
+        title="Admin",
+        logon=logon,
+        editor=page,
+    )
