@@ -4,8 +4,8 @@ from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
-from flask import redirect, render_template, session, flash
-from models import Group, Page, get_comment_many_documents_by_author
+from flask import flash, redirect, render_template, session
+from models import Group, Page, get_all_pages, get_comment_many_documents_by_author
 from models.user import User, get_user_document_by_username
 
 from .. import www
@@ -27,10 +27,12 @@ async def root():
         page="Home",
         brand=BRAND,
         logon=logon,
-        latest_posts=await latest_posts(),
+        atest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
         user_card=user_card,
-        content=page.content
+        content=page.content,
     )
+
 
 @www.route("/<route>")
 async def arbitrary(route: str):
@@ -55,9 +57,10 @@ async def arbitrary(route: str):
         page=route.title(),
         brand=BRAND,
         logon=logon,
-        latest_posts=await latest_posts(),
+        atest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
         user_card=user_card,
-        content=page.content
+        content=page.content,
     )
 
 
@@ -80,7 +83,8 @@ async def auth(page: str):
         brand=BRAND,
         title="Sign in" if login_page else "Sign up",
         logon=await get_session(session),
-        latest_posts=await latest_posts(),
+        atest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
     )
 
 
@@ -111,7 +115,12 @@ async def profile(username: str):
         "home/profile.html",
         hostname=HOSTNAME,
         css=CSS + ["/static/css/quill.snow.css"],
-        js=JS + ["/static/js/jquery-3.6.4.slim.min.js", "/static/js/quill.min.js", "/static/js/quill_editor.js"],
+        js=JS
+        + [
+            "/static/js/jquery-3.6.4.slim.min.js",
+            "/static/js/quill.min.js",
+            "/static/js/quill_editor.js",
+        ],
         navbar=NAVBAR,
         username=username,
         group=group,
@@ -122,6 +131,7 @@ async def profile(username: str):
         title=username,
         logon=logon,
         user_card=user_card,
-        latest_posts=await latest_posts(),
-        bio=bio
+        atest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
+        bio=bio,
     )

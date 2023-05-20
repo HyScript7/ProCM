@@ -1,35 +1,64 @@
 <aside>
   <div class="container-fluid">
-    <h2>Aside Panel</h2>
+    <h2>{{brand}}</h2>
     {% if logon[0] %}
     <div class="container-fluid w-100 p-0">
       {% include "components/user_card.html" %}
     </div>
-    {% endif %} {% if not latest_posts %}
-    <ul class="list-group list-group">
-      <li
-        class="list-group-item d-flex justify-content-between align-items-start"
-      >
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">No blog posts avabiable</div>
-          There is nothing here yet...
-        </div>
-      </li>
-    </ul>
     {% endif %}
-    <ol class="list-group list-group-numbered">
-      {% for post in latest_posts %}
-      <li
-        class="list-group-item d-flex justify-content-between align-items-start"
-      >
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">
-            <a href="/blog/post/{{post.id}}">{{post.title}}</a>
+    <div class="card">
+      <div class="card-header text-dark">Latest blog posts</div>
+      {% if not latest_posts %}
+      <ul class="list-group list-group">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-start"
+        >
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">No blog posts avabiable</div>
+            There is nothing here yet...
           </div>
-          {{post.preview}}
-        </div>
-      </li>
-      {% endfor %}
-    </ol>
+        </li>
+      </ul>
+      {% endif %}
+      <ol class="list-group list-group-numbered">
+        {% for post in latest_posts %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-start"
+        >
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">
+              <a href="/blog/post/{{post.id}}">{{post.title}}</a>
+            </div>
+            {{post.preview}}
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="card mt-2">
+      <div class="card-header text-dark">Page map</div>
+      <ul class="list-group">
+        {% if not page_map %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-start"
+        >
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">There are no user defined pages.</div>
+          </div>
+        </li>
+        {% endif %} {% for page in page_map %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-start"
+        >
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">
+              <a href="/{{page.route}}">{{page.route.title()}}</a>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 </aside>
