@@ -5,7 +5,7 @@ class blankPage:
     def __init__(self) -> None:
         self.id = 0
         self.content = "<h1>Hello World!</h1>"
-        self.route = "/example"
+        self.route = "example"
         self.can_be_deleted = True
 
 

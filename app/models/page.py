@@ -91,9 +91,12 @@ class Page:
         return cls(pagedata)
 
 
-async def get_all_pages():
+async def get_all_pages(only_user_defined: bool = False):
+    mod = {}
+    if only_user_defined:
+        mod["deletable"] = True
     pages = []
-    for page in DB_PAGES.find({"id": {"$exists": True}}):
+    for page in DB_PAGES.find({"id": {"$exists": True}, **mod}):
         pages.append(Page(page))
     return pages
 
