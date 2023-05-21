@@ -17,6 +17,7 @@ async def get_repository_data(repository: str):
     Returns:
         list: A list containing the name, description, license, stars and forks in that order.
     """
+    # I have almost no clue what is going on here, so I will avoid making an inline request statement
     repo_url = f"{API_URL}{GITHUB_USERNAME}/{repository}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     response = requests.get(repo_url, headers=headers)
@@ -34,3 +35,16 @@ async def get_repository_data(repository: str):
         raise ValueError(f"Repository '{GITHUB_USERNAME}/{repository}' does not exist.")
     else:
         raise ValueError("Failed to retrieve repository information.")
+
+
+async def get_all_repositories():
+    response = requests.get(
+        f"https://api.github.com/users/{GITHUB_USERNAME}/repos",
+        headers={"Authorization": f"token {GITHUB_TOKEN}"},
+    )
+    if response.status_code == 200:
+        repositories = response.json()
+        repos = [repo["name"] for repo in repositories]
+        return repos
+    else:
+        raise ValueError("Failed to retrieve user repositories.")
