@@ -99,6 +99,15 @@ class Project:
         self.__init__({**self.dump(), **updated})
         await self.push()
 
+    async def fetch_stars(self) -> None:
+        repo = await get_repository_data(self.url.split("/")[-1])
+        updated = {
+            "stars": repo[3],
+            "forks": repo[4],
+        }
+        self.__init__({**self.dump(), **updated})
+        await self.push()
+
     @classmethod
     async def fetch(cls, name: str):
         proj = await get_project_document_by_name(name)
@@ -106,7 +115,9 @@ class Project:
             raise ValueError(
                 f"A project with the name {name} was not found in the database!"
             )
-        return cls(proj)
+        p = cls(proj)
+        await p.fetch_stars()
+        return p
 
     @classmethod
     async def new(cls, repo_name: str):
