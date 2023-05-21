@@ -19,6 +19,10 @@ async def get_project_document_by_id(uuid: str) -> dict:
     return await get_project_document_by_filter({"id": uuid})
 
 
+async def get_project_document_by_name(name: str) -> dict:
+    return await get_project_document_by_filter({"name": name})
+
+
 async def get_project_many_documents_by_filter(
     flt: dict, limit: int = 20, page: int = 0
 ) -> list[dict]:
@@ -96,16 +100,18 @@ class Project:
         await self.push()
 
     @classmethod
-    async def fetch(cls, uuid: str):
-        user = await get_project_document_by_id(uuid)
-        if user == {}:
+    async def fetch(cls, name: str):
+        proj = await get_project_document_by_name(name)
+        if proj == {}:
             raise ValueError(
-                f"A project with the id {uuid} was not found in the database!"
+                f"A project with the name {name} was not found in the database!"
             )
-        return cls(user)
+        return cls(proj)
 
     @classmethod
     async def new(cls, repo_name: str):
+        if await get_project_document_by_name(repo_name) != {}:
+            raise ValueError("A project with this name is already registered!")
         repo = await get_repository_data(repo_name)
         now = time()
         project_doc = {
