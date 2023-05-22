@@ -4,12 +4,16 @@ from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
-from flask import flash, redirect, render_template, session
+from flask import flash, redirect, render_template, session, send_file
 from models import Group, Page, get_all_pages, get_comment_many_documents_by_author
 from models.user import User, get_user_document_by_username
 
 from .. import www
 
+
+@www.route("/favicon.ico")
+async def favicon():
+    return send_file("./static/img/logo.svg")
 
 @www.route("/")
 async def root():
