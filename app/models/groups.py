@@ -56,6 +56,7 @@ class Permissions:
             "page": False,
             "project": False,
             "admin": False,
+            "user": False
         }
         return cls(
             {
@@ -68,6 +69,7 @@ class Permissions:
                     "post": True,
                     "project": True,
                     "page": True,
+                    "user": True,
                 },
             }
         )
@@ -162,6 +164,7 @@ async def get_admin_group_id() -> str:
             "page": True,
             "project": True,
             "admin": True,
+            "user": True,
         }
         resources = {
             "create": default_resources,

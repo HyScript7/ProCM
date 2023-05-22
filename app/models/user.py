@@ -1,4 +1,5 @@
 from base64 import b64decode, b64encode
+from math import ceil
 from random import choice
 from time import time
 
@@ -31,6 +32,34 @@ async def get_user_document_by_id(id: str) -> dict:
 
 async def get_user_document_by_token(token: str) -> dict:
     return await get_user_document_by_filter({"tokens": {"$in": [token]}})
+
+
+async def get_user_many_documents_by_filter(
+    flt: dict, limit: int = 20, page: int = 0
+) -> list[dict]:
+    docs = DB_USERS.find(flt).sort("created", -1).skip(page * limit).limit(limit)
+    if docs is None:
+        return []
+    documents: list[dict] = []
+    for doc in docs:
+        if doc is None:
+            continue
+        if "id" not in doc:
+            continue
+        documents.append(doc)
+    return documents
+
+
+async def get_user_count(limit: int = 20):
+    count = ceil(
+        len(
+            await get_user_many_documents_by_filter(
+                {"id": {"$exists": True}}, limit=4294967295
+            )
+        )
+        / limit
+    )
+    return count
 
 
 class User:

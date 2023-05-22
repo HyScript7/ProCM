@@ -8,7 +8,8 @@ from common.route_vars import BRAND, CSS
 from common.route_vars import JS as _JS
 from common.sessionparser import get_session
 from flask import flash, redirect, render_template, request, session
-from models import Group, User, get_all_pages, get_post_many_documents_by_filter
+from models import Group, get_all_pages, get_post_many_documents_by_filter
+from models.user import User, get_user_count, get_user_many_documents_by_filter
 
 from .. import admin
 
@@ -75,6 +76,11 @@ async def users():
     if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
+    try:
+        limit = int(request.args.get("limit", 25))
+        page = int(request.args.get("p", 1)) - 1
+    except ValueError:
+        limit, page = 25, 0
     return render_template(
         "admin/users.html",
         hostname=HOSTNAME,
@@ -85,6 +91,13 @@ async def users():
         brand=BRAND,
         title="Admin",
         logon=logon,
+        pages=await get_user_count(limit),
+        users=[
+            User(user)
+            for user in await get_user_many_documents_by_filter(
+                {"id": {"$exists": True}}, limit, page
+            )
+        ],
     )
 
 
