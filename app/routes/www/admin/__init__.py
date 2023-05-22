@@ -7,6 +7,7 @@ from common.page import pageEditor
 from common.route_vars import BRAND, CSS
 from common.route_vars import JS as _JS
 from common.sessionparser import get_session
+from common.user_editor import Editor as UserEditor
 from flask import flash, redirect, render_template, request, session
 from models import Group, get_all_pages, get_post_many_documents_by_filter
 from models.user import User, get_user_count, get_user_many_documents_by_filter
@@ -98,6 +99,52 @@ async def users():
                 {"id": {"$exists": True}}, limit, page
             )
         ],
+    )
+
+
+@admin.route("/users/edit/<uuid>/")
+async def user_editor(uuid: str):
+    """
+    User Editor
+    """
+    logon = await get_session(session)
+    can_edit: bool = False
+    if logon:
+        logon[1]: User
+        group = await Group.from_id(logon[1].group)
+        group: Group
+        can_edit = group.permissions.get("manage", "user")
+    else:
+        flash("error;You are not authorized to access this page!")
+        return redirect("/auth/login")
+    if not (await check_session_and_permissions(logon) and can_edit):
+        flash("error;You are not authorized to access this page!")
+        return redirect("/admin/users")
+    create = uuid == "new"
+    if not create:
+        try:
+            user = await UserEditor.edit(uuid)
+        except Exception as e:
+            flash(f"error;Could not open editor for the user {uuid}: {str(e)}")
+            return redirect("/admin/users")
+    else:
+        user = await UserEditor.edit(logon[1].id)
+    return render_template(
+        "admin/user_editor.html",
+        hostname=HOSTNAME,
+        css=CSS + ["/static/css/quill.snow.css"],
+        js=JS
+        + [
+            "/static/js/quill.min.js",
+            "/static/js/quill_editor.js",
+        ],
+        navbar=NAVBAR,
+        page="Users",
+        brand=BRAND,
+        title="Admin",
+        logon=logon,
+        editor=user,
+        new_user=create
     )
 
 

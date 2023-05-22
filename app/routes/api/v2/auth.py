@@ -1,8 +1,8 @@
+from common.sessionparser import get_session
 from common.uuid import hash_password
 from common.xss_checker import safe_xss
-from common.sessionparser import get_session
 from flask import flash, request, session
-from models import User, Group
+from models import Group, User
 from models.user import get_user_document_by_id
 
 from . import api, get_args, response
@@ -13,9 +13,75 @@ async def auth_root():
     return response(request, {}, 200, "OK")
 
 
+async def register_new_user_as_admin(request, redirect_url):
+    try:
+        args = await get_args(request, ["username", "password", "email", "group"])
+    except KeyError as e:
+        flash("error;Invalid request!")
+        return response(
+            request,
+            {},
+            400,
+            "Unable to get all required arguments!",
+            redirect_path=redirect_url,
+        )
+    email = args.get("email")
+    username = args.get("username")
+    password = args.get("password")
+    group = args.get("group")
+    try:
+        user = await User.register(username, hash_password(password), email)
+        user.group = group
+        await user.push()
+    except ValueError as e:
+        flash("error;" + str(e))
+        return response(
+            request,
+            {},
+            400,
+            "Unable to register: " + str(e),
+            redirect_path=redirect_url,
+        )
+    return response(
+        request,
+        {"user_id": user.id},
+        201,
+        "Registration successful",
+        redirect_path="/admin/users",
+    )
+
+
 @api.route("/auth/register/", methods=["POST"])
 async def auth_register():
     redirect_url: str | None = request.referrer if request.referrer else None
+    administrate = request.args.get("admin", "0")
+    try:
+        administrate = int(administrate) >= 1
+    except ValueError:
+        administrate = 0
+    if administrate:
+        logon = await get_session(session)
+        if not logon:
+            flash("error;You are not signed in!")
+            return response(
+                request,
+                {},
+                401,
+                "You are not signed in account!",
+                redirect_path="/auth/login",
+            )
+        # check perms
+        group = await Group.from_id(logon[1].group)
+        if not group.permissions.get("manage", "user"):
+            flash("error;You are not allowed to manage users!")
+            return response(
+                request,
+                {},
+                401,
+                "You are not allowed to manage users!",
+                redirect_path=redirect_url,
+            )
+        return await register_new_user_as_admin(request, redirect_url)
     if session.get("token", False):
         flash("error;You already have an account!")
         return response(
@@ -273,5 +339,82 @@ async def auth_delete(uuid):
         {},
         200,
         f"Deleted user {user.id} (@{user.username})",
+        redirect_path=redirect_url,
+    )
+
+
+@api.route("/auth/admin/update/<uuid>/", methods=["POST"])
+async def auth_admin_update(uuid):
+    redirect_url: str | None = request.referrer if request.referrer else None
+    try:
+        args = await get_args(
+            request, ["content", "username", "email", "tokens", "group"]
+        )
+    except KeyError as e:
+        flash(
+            "error;Argument Error: You must provide a username, email, tokens, group and content!"
+        )
+        return response(
+            request,
+            {"error": str(e)},
+            400,
+            "Invalid arguments",
+            redirect_path=redirect_url,
+        )
+    logon = await get_session(session)
+    if not logon:
+        flash("error;Permission Error: You are not signed in!")
+        return response(
+            request,
+            {},
+            401,
+            "You must sign in to perform this action!",
+            redirect_path=redirect_url,
+        )
+    author: User = logon[1]
+    perms = await Group.from_id(author.group)
+    if not perms.permissions.get("manage", "user"):
+        flash("error;Permission Error: You are not authorized to manage users")
+        return response(
+            request,
+            {},
+            401,
+            "Missing Permissions: You cannot manage a user!",
+            redirect_path=redirect_url,
+        )
+    user = await get_user_document_by_id(uuid)
+    if user == {}:
+        flash(f"error;User with the id {uuid} was not found!")
+        return response(
+            request,
+            {},
+            404,
+            f"User by the id {uuid} not found!",
+            redirect_path=redirect_url,
+        )
+    user = User(user)
+    username: str = args.get("username", user.username)
+    password: str = args.get("password", False)
+    email: str = args.get("email", user.email)
+    tokens: str = args.get("tokens", ", ".join(user.tokens)).replace(" ", "").split(",")
+    group: str = args.get("group", user.group)
+    bio: str = safe_xss(
+        args.get("content", "".join(user.bio)).replace("\r", "\n")
+    ).split("\n")
+    if password:
+        password = hash_password(password)
+        user.password = password
+    user.username = username
+    user.email = email
+    user.tokens = tokens
+    user.group = group
+    user.bio = bio
+    await user.push()
+    flash(f"success;User {user.username} ({user.id}) has been updated!")
+    return response(
+        request,
+        {},
+        200,
+        f"User {user.username} ({user.id}) has been updated!",
         redirect_path=redirect_url,
     )
