@@ -1,7 +1,8 @@
 from common.uuid import hash_password
 from common.xss_checker import safe_xss
+from common.sessionparser import get_session
 from flask import flash, request, session
-from models import User
+from models import User, Group
 from models.user import get_user_document_by_id
 
 from . import api, get_args, response
@@ -70,7 +71,11 @@ async def auth_register():
     except ValueError as e:
         flash("error;" + str(e))
         return response(
-            request, {}, 400, "Unable to register: " + str(e), redirect_path=redirect_url
+            request,
+            {},
+            400,
+            "Unable to register: " + str(e),
+            redirect_path=redirect_url,
         )
     return response(
         request,
@@ -167,7 +172,9 @@ async def auth_get_bio(id):
         user = User(user)
     except ValueError as e:
         flash("error;" + str(e))
-        return response(request, {}, 400, "Error: " + str(e), redirect_path=redirect_url)
+        return response(
+            request, {}, 400, "Error: " + str(e), redirect_path=redirect_url
+        )
     return response(
         request,
         {"bio": user.bio},
@@ -221,3 +228,50 @@ async def auth_set_bio():
             "Something went wrong trying to update the bio!",
             redirect_path=redirect_url,
         )
+
+
+@api.route("/auth/delete/<uuid>/", methods=["POST", "GET"])
+async def auth_delete(uuid):
+    redirect_url: str | None = request.referrer if request.referrer else None
+    logon = await get_session(session)
+    if not logon:
+        flash("error;Permission Error: You are not signed in!")
+        return response(
+            request,
+            {},
+            401,
+            "You must sign in to perform this action!",
+            redirect_path=redirect_url,
+        )
+    author: User = logon[1]
+    # Verify permissions
+    perms = await Group.from_id(author.group)
+    if not (perms.permissions.get("delete", "user") or uuid == author.id):
+        flash("error;Permission Error: You are not authorized to delete users")
+        return response(
+            request,
+            {},
+            401,
+            "Missing Permissions: You cannot delete a user!",
+            redirect_path=redirect_url,
+        )
+    user = await get_user_document_by_id(uuid)
+    if user == {}:
+        flash(f"error;Error: User {uuid} does not exist!")
+        return response(
+            request,
+            {},
+            404,
+            "Error: User does not exist!",
+            redirect_path=redirect_url,
+        )
+    user = User(user)
+    await user.delete()
+    flash(f"success;User {user.id} (@{user.username}) has been deleted!")
+    return response(
+        request,
+        {},
+        200,
+        f"Deleted user {user.id} (@{user.username})",
+        redirect_path=redirect_url,
+    )
