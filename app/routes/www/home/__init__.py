@@ -27,7 +27,7 @@ async def root():
         page="Home",
         brand=BRAND,
         logon=logon,
-        atest_posts=await latest_posts(),
+        latest_posts=await latest_posts(),
         page_map=await get_all_pages(True),
         user_card=user_card,
         content=page.content,
@@ -57,7 +57,7 @@ async def arbitrary(route: str):
         page=route.title(),
         brand=BRAND,
         logon=logon,
-        atest_posts=await latest_posts(),
+        latest_posts=await latest_posts(),
         page_map=await get_all_pages(True),
         user_card=user_card,
         content=page.content,
@@ -83,7 +83,7 @@ async def auth(page: str):
         brand=BRAND,
         title="Sign in" if login_page else "Sign up",
         logon=await get_session(session),
-        atest_posts=await latest_posts(),
+        latest_posts=await latest_posts(),
         page_map=await get_all_pages(True),
     )
 
@@ -131,7 +131,7 @@ async def profile(username: str):
         title=username,
         logon=logon,
         user_card=user_card,
-        atest_posts=await latest_posts(),
+        latest_posts=await latest_posts(),
         page_map=await get_all_pages(True),
         bio=bio,
     )
