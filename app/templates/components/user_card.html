@@ -6,11 +6,22 @@
     <div class="row">
       <div class="col">
         <h5 class="card-title">{{logon[1].username}}</h5>
-        <p class="card-text">Comments: {{user_card.comments}}</p>
+        <div>
+          <a
+            href="/api/v2/auth/logout"
+            class="link-primary text-decoration-none"
+            ><i class="bi bi-door-open"></i>Logout</a
+          >
+          <a href="/user/" class="link-primary text-decoration-none"
+            ><i class="bi bi-person"></i>Profile</a
+          >
+        </div>
+        <!-- <p class="card-text">Comments: {{user_card.comments}}</p> -->
       </div>
+      <!--
       <div class="col container-fluid">
         <img class="img-thumbnail" src="{{user_card.pfp_url}}" alt="Profile Picture" width="auto" height="100%"/>
       </div>
-    </div>
+    --></div>
   </div>
 </div>
