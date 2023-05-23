@@ -4,8 +4,16 @@ from common.dateparser import parse_date
 from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
-from flask import flash, redirect, render_template, session, send_file
-from models import Group, Page, get_all_pages, get_comment_many_documents_by_author
+from flask import flash, redirect, render_template, request, send_file, session
+from math import ceil
+from models import (
+    Group,
+    Page,
+    Project,
+    get_all_pages,
+    get_comment_many_documents_by_author,
+    get_project_many_documents_by_filter,
+)
 from models.user import User, get_user_document_by_username
 
 from .. import www
@@ -13,7 +21,8 @@ from .. import www
 
 @www.route("/favicon.ico")
 async def favicon():
-    return send_file("./static/img/logo.svg")
+    return send_file("./static/img/favicon.ico")
+
 
 @www.route("/")
 async def root():
@@ -35,6 +44,47 @@ async def root():
         page_map=await get_all_pages(True),
         user_card=user_card,
         content=page.content,
+    )
+
+
+@www.route("/projects/")
+async def projects():
+    logon = await get_session(session)
+    user_card = None
+    if logon:
+        user_card = await User_card.get(logon[1])
+    try:
+        page = int(request.args.get("p", "1")) - 1
+        limit = int(request.args.get("l", "25"))
+    except ValueError:
+        page, limit = 0, 25
+    page_count = ceil(
+        len(
+            await get_project_many_documents_by_filter(
+                {"id": {"$exists": True}}, limit=4294967295
+            )
+        )
+        / limit
+    )
+    return render_template(
+        "home/projects.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        page="Home",
+        brand=BRAND,
+        logon=logon,
+        latest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
+        user_card=user_card,
+        pages=page_count,
+        projects=[
+            Project(project)
+            for project in await get_project_many_documents_by_filter(
+                {"id": {"$exists": True}}, limit, page
+            )
+        ],
     )
 
 
