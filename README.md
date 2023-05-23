@@ -122,6 +122,10 @@ To run the server, you need a MongoDB database and python installed on your host
 | BRAND                   | The name of the site                                     |
 | GIT_TOKEN               | The github token to fetch projects with                  |
 | GIT_USERNAME            | The github username of the account that owns the token   |
+5. Run the production server using gunicorn
+   ```sh
+   gunicorn main:app -b 0.0.0.0
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
