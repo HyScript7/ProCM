@@ -140,10 +140,8 @@ async def project_update():
     name: str = args.get("name")
     try:
         project = await Project.fetch(name)
-        name: str = args.get("name", project.name)
         description: str = args.get("description", project.description)
         license: str = args.get("license", project.license)
-        project.name = name
         project.description = description
         project.license = license
         await project.push()
