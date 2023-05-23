@@ -1,12 +1,14 @@
 <aside>
-  <div class="container-fluid">
-    <h2>{{brand}}</h2>
+  <div class="container-fluid mb-2">
+    <div class="text-center">
+      <h2>{{brand}}</h2>
+    </div>
     {% if logon[0] %}
-    <div class="container-fluid w-100 p-0">
+    <div class="container-fluid w-100 p-0 mb-3">
       {% include "components/user_card.html" %}
     </div>
     {% endif %}
-    <div class="card">
+    <div class="card mb-3">
       <div class="card-header text-dark">Latest blog posts</div>
       {% if not latest_posts %}
       <ul class="list-group list-group">
@@ -36,7 +38,7 @@
       </ol>
     </div>
 
-    <div class="card mt-2">
+    <div class="card mb-3">
       <div class="card-header text-dark">Page map</div>
       <ul class="list-group">
         {% if not page_map %}
