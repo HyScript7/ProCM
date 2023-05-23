@@ -4,12 +4,19 @@ from common.administration import DashboardData, PostEditor
 from common.blog import parsedPost
 from common.configuration import HOSTNAME
 from common.page import pageEditor
+from common.projects import get_all_repositories
 from common.route_vars import BRAND, CSS
 from common.route_vars import JS as _JS
 from common.sessionparser import get_session
 from common.user_editor import Editor as UserEditor
 from flask import flash, redirect, render_template, request, session
-from models import Group, get_all_pages, get_post_many_documents_by_filter
+from models import (
+    Group,
+    Project,
+    get_all_pages,
+    get_post_many_documents_by_filter,
+    get_project_many_documents_by_filter,
+)
 from models.user import User, get_user_count, get_user_many_documents_by_filter
 
 from .. import admin
@@ -144,7 +151,7 @@ async def user_editor(uuid: str):
         title="Admin",
         logon=logon,
         editor=user,
-        new_user=create
+        new_user=create,
     )
 
 
@@ -157,8 +164,11 @@ async def blog():
     if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
-    page = int(request.args.get("p", "1")) - 1
-    limit = int(request.args.get("l", "25"))
+    try:
+        page = int(request.args.get("p", "1")) - 1
+        limit = int(request.args.get("l", "25"))
+    except ValueError:
+        page, limit = 0, 25
     page_count = ceil(
         len(
             await get_post_many_documents_by_filter(
@@ -236,6 +246,22 @@ async def projects():
     if not (await check_session_and_permissions(logon)):
         flash("error;You are not authorized to access this page!")
         return redirect("/auth/login")
+    try:
+        page = int(request.args.get("p", "1")) - 1
+        limit = int(request.args.get("l", "25"))
+    except ValueError:
+        page, limit = 0, 25
+    page_count = ceil(
+        len(
+            await get_project_many_documents_by_filter(
+                {"id": {"$exists": True}}, limit=4294967295
+            )
+        )
+        / limit
+    )
+    projects = await get_project_many_documents_by_filter(
+        {"id": {"$exists": True}}, page=page, limit=limit
+    )
     return render_template(
         "admin/projects.html",
         hostname=HOSTNAME,
@@ -246,6 +272,69 @@ async def projects():
         brand=BRAND,
         title="Admin",
         logon=logon,
+        pages=page_count,
+        projects=[Project(project) for project in projects],
+    )
+
+
+@admin.route("/projects/edit/<name>/")
+async def project_editor(name):
+    """
+    Project Editor
+    """
+    logon = await get_session(session)
+    if logon:
+        logon[1]: User
+        group = await Group.from_id(logon[1].group)
+        group: Group
+        can_edit = group.permissions.get("manage", "project")
+    else:
+        flash("error;You are not authorized to access this page!")
+        return redirect("/auth/login")
+    if not (await check_session_and_permissions(logon) and can_edit):
+        flash("error;You are not authorized to access this page!")
+        return redirect("/auth/login")
+    if name == "new":
+        return render_template(
+            "admin/project_creator.html",
+            hostname=HOSTNAME,
+            css=CSS,
+            js=JS,
+            navbar=NAVBAR,
+            page="Projects",
+            brand=BRAND,
+            title="Admin",
+            logon=logon,
+            projects=[
+                await get_all_repositories(),
+                [
+                    i.get("name")
+                    for i in await get_project_many_documents_by_filter(
+                        {"id": {"$exists": True}}, 4294967295
+                    )
+                ],
+            ],
+        )
+    if request.args.get("create", "0") == "1":
+        fun = Project.new
+    else:
+        fun = Project.fetch
+    try:
+        p = await fun(name)
+    except ValueError as e:
+        flash(f"error;Could not open editor: {e}")
+        return redirect("/admin/projects/")
+    return render_template(
+        "admin/project_editor.html",
+        hostname=HOSTNAME,
+        css=CSS,
+        js=JS,
+        navbar=NAVBAR,
+        page="Projects",
+        brand=BRAND,
+        title="Admin",
+        logon=logon,
+        editor=p,
     )
 
 

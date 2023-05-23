@@ -102,13 +102,13 @@ async def project_create():
     return response(request, {}, 200, "OK", redirect_path=redirect_url)
 
 
-@api.route("/project/update/", methods=["GET", "POST"])
-async def project_update():
+@api.route("/project/update/<uuid>/", methods=["GET", "POST"])
+async def project_update(uuid: str):
     redirect_url: str | None = request.referrer if request.referrer else None
     try:
-        args = await get_args(request, ["name"])
+        args = await get_args(request, ["url", "description", "license"])
     except KeyError as e:
-        flash("error;Argument Error: You must provide content.")
+        flash("error;Argument Error: You must provide the url, description and license!")
         return response(
             request,
             {"error": str(e)},
@@ -137,16 +137,17 @@ async def project_update():
             "Missing Permissions: You cannot manage a project!",
             redirect_path=redirect_url,
         )
-    name: str = args.get("name")
     try:
-        project = await Project.fetch(name)
+        project = await Project.fetch(uuid) # Note: The UUID is actually the name
+        url: str = args.get("url", project.url)
         description: str = args.get("description", project.description)
         license: str = args.get("license", project.license)
+        project.url = url
         project.description = description
         project.license = license
         await project.push()
     except Exception as e:
-        flash(f"error;Project {name} could not be updated: {str(e)}")
+        flash(f"error;Project {uuid} could not be updated: {str(e)}")
         return response(
             request,
             {},
