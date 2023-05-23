@@ -1,0 +1,197 @@
+{% extends "admin/index.html" %} {% block dash %}
+<div class="text-center">
+  <h1>{{page}}</h1>
+  <hr />
+</div>
+<div class="container-fluid d-flex flex-column mb-3">
+  {% if not new_user %}
+  <p>Editting user {{editor.user.username}} ({{editor.user.id}})</p>
+  <form
+    id="editor-controls"
+    method="post"
+    action="/api/v2/auth/admin/update/{{editor.user.id}}/"
+  >
+    <div class="container-fluid d-flex flex-column mb-3">
+      <div class="input-group mb-3">
+        <span class="input-group-text">Username</span>
+        <input
+          type="text"
+          class="form-control"
+          id="Username"
+          name="username"
+          value="{{editor.user.username}}"
+        />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Password</span>
+        <input type="text" class="form-control" id="Password" name="password" />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Email</span>
+        <input
+          type="text"
+          class="form-control"
+          id="email"
+          name="email"
+          value="{{editor.user.email}}"
+        />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Group</span>
+        <select class="form-select" name="group" aria-label="Group selector">
+          {% for name, id in editor.group_selector.items() %} {% if
+          editor.user.group == id %}
+          <option selected value="{{id}}">{{name}}</option>
+          {% else %}
+          <option value="{{id}}">{{name}}</option>
+          {%endif %} {% endfor %}
+        </select>
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Tokens</span>
+        <input
+          type="text"
+          class="form-control"
+          id="tokens"
+          name="tokens"
+          value="{{', '.join(editor.user.tokens)}}"
+        />
+      </div>
+
+      <div id="toolbar" class="bg-light text-dark">
+        <span class="ql-formats">
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+          <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-blockquote"></button>
+          <button class="ql-code-block"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-script" value="sub"></button>
+          <button class="ql-script" value="super"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-link"></button>
+          <button class="ql-image"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-indent" value="-1"></button>
+          <button class="ql-indent" value="+1"></button>
+        </span>
+        <span class="ql-formats">
+          <select class="ql-size">
+            <option value="small"></option>
+            <option selected></option>
+            <option value="large"></option>
+            <option value="huge"></option>
+          </select>
+        </span>
+        <span class="ql-formats">
+          <select class="ql-header">
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+            <option value="6"></option>
+            <option selected value="7"></option>
+          </select>
+        </span>
+
+        <span class="ql-formats">
+          <select class="ql-color"></select>
+          <select class="ql-background"></select>
+        </span>
+
+        <span class="ql-formats">
+          <select class="ql-font"></select>
+        </span>
+
+        <span class="ql-formats">
+          <button class="ql-align" value=""></button>
+          <button class="ql-align" value="center"></button>
+          <button class="ql-align" value="right"></button>
+          <button class="ql-align" value="justify"></button>
+        </span>
+
+        <span class="ql-formats">
+          <button class="ql-clean"></button>
+        </span>
+      </div>
+      <div id="editor" class="container-fluid bg-light text-dark">
+        {{ ''.join(editor.user.bio) | safe }}
+      </div>
+
+      <div
+        class="btn-group w-100 mt-3"
+        role="group"
+        aria-label="Editor Controls"
+      >
+        <button
+          type="submit"
+          class="btn btn-primary"
+          formaction="/api/v2/auth/admin/update/{{editor.user.id}}/"
+        >
+          Save
+        </button>
+        <button type="reset" class="btn btn-primary" formaction="">
+          Discard
+        </button>
+      </div>
+    </div>
+  </form>
+  {% else %}
+  <p>Creating a new user</p>
+  <form method="post" action="/api/v2/auth/register?admin=1">
+    <div class="container-fluid d-flex flex-column mb-3">
+      <div class="input-group mb-3">
+        <span class="input-group-text">Email</span>
+        <input
+          type="email"
+          class="form-control"
+          id="Email"
+          name="email"
+          value=""
+        />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Username</span>
+        <input
+          type="text"
+          class="form-control"
+          id="Username"
+          name="username"
+          value=""
+        />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Password</span>
+        <input
+          type="password"
+          class="form-control"
+          id="Password"
+          name="password"
+          value=""
+        />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Group</span>
+        <select class="form-select" name="group" aria-label="Group selector">
+          {% for name, id in editor.group_selector.items() %}
+          <option value="{{id}}">{{name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Register</button>
+    </div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

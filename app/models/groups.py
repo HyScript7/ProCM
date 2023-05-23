@@ -30,21 +30,18 @@ class Permissions:
 
     def action(self, action: str) -> list[bool]:
         if action not in self.permissions:
-            raise NameError(
-                "Unknown action requested of the Permission Wrapper")
+            raise NameError("Unknown action requested of the Permission Wrapper")
         return self.permissions[action]
 
     def get(self, action: str, resource: str) -> bool:
         action: dict = self.action(action)
         if resource not in action:
-            raise NameError(
-                "Unknown resource requested of the Permission Wrapper")
+            raise NameError("Unknown resource requested of the Permission Wrapper")
         return action[resource]
 
     def set(self, action: str, resource: str, value: bool) -> None:
         if resource not in self.action(action):
-            raise NameError(
-                "Unknown resource requested of the Permission Wrapper")
+            raise NameError("Unknown resource requested of the Permission Wrapper")
         self.permissions[action][resource] = value
 
     def dump(self) -> dict:
@@ -56,8 +53,10 @@ class Permissions:
             "comment": False,
             "comment.own": True,  # This is used to distinct comment admin from own comment management
             "post": False,
+            "page": False,
             "project": False,
             "admin": False,
+            "user": False
         }
         return cls(
             {
@@ -69,6 +68,8 @@ class Permissions:
                     "comment": True,
                     "post": True,
                     "project": True,
+                    "page": True,
+                    "user": True,
                 },
             }
         )
@@ -128,8 +129,7 @@ class Group:
     async def create(cls, name: str, overrides: dict):
         name_check = await get_group_document_by_name(name)
         if name_check != {}:
-            raise ValueError(
-                f"The provided name '{name}' is already used by a group!")
+            raise ValueError(f"The provided name '{name}' is already used by a group!")
         now = time()
         group: dict = {
             "id": uuid(),
@@ -161,8 +161,10 @@ async def get_admin_group_id() -> str:
             "comment": True,
             "comment.own": True,
             "post": True,
+            "page": True,
             "project": True,
             "admin": True,
+            "user": True,
         }
         resources = {
             "create": default_resources,

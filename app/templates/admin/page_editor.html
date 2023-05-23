@@ -72,38 +72,26 @@
     </span>
   </div>
   <div id="editor" class="container-fluid bg-light text-dark">
-    {{ blog.content | safe }}
+    {{ editor.content | safe }}
   </div>
   <form id="editor-controls" method="post">
     <div class="input-group mb-3 my-3">
-      <span class="input-group-text">Title</span>
+      <span class="input-group-text">Route</span>
       <input
         type="text"
         class="form-control"
-        name="title"
-        id="title"
-        placeholder="Article Title"
-        value="{{blog.title}}"
+        name="route"
+        id="route"
+        placeholder="Route"
+        value="{{editor.route}}"
       />
     </div>
-    <div class="input-group mb-3">
-      <span class="input-group-text">Tags</span>
-      <input
-        type="text"
-        class="form-control"
-        name="tags"
-        id="tags"
-        placeholder="Article Title"
-        value="{{', '.join(blog.tags)}}"
-      />
-    </div>
-
     <div class="btn-group w-100" role="group" aria-label="Editor Controls">
-      {% if blog.is_new %}
+      {% if editor.is_new %}
       <button
         type="submit"
         class="btn btn-primary"
-        formaction="/api/v2/post/create/"
+        formaction="/api/v2/page/create/"
       >
         Create
       </button>
@@ -111,14 +99,14 @@
       <button
         type="submit"
         class="btn btn-primary"
-        formaction="/api/v2/post/edit/{{blog.id}}/"
+        formaction="/api/v2/page/update/{{editor.route}}/"
       >
         Save
       </button>
       <button
         type="submit"
         class="btn btn-primary"
-        formaction="/api/v2/post/create/"
+        formaction="/api/v2/page/create/"
       >
         Save as copy
       </button>

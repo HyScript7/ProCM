@@ -6,7 +6,7 @@ from common.route_vars import BRAND, CSS, JS, NAVBAR
 from common.sessionparser import get_session
 from common.usercard import User_card
 from flask import flash, redirect, render_template, request, session
-from models import Post, get_post_many_documents_by_filter
+from models import Post, get_all_pages, get_post_many_documents_by_filter
 
 from .. import www
 
@@ -44,6 +44,7 @@ async def blog():
         logon=logon,
         user_card=user_card,
         latest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
         pages=page_count,
         posts=[await parsedPost.parse(post) for post in posts][::-1],
     )
@@ -71,6 +72,7 @@ async def post(id):
         brand=BRAND,
         logon=logon,
         latest_posts=await latest_posts(),
+        page_map=await get_all_pages(True),
         user_card=user_card,
         post=await parsedPost.parse(post.dump()),
     )

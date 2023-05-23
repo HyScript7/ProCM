@@ -1,62 +1,72 @@
 {% extends "admin/index.html" %} {% block dash %}
-
 <div class="text-center">
   <h1>{{page}}</h1>
+  <hr />
 </div>
-<div class="row">
-  <div class="col">
-    <div class="card text-bg-dark mb-3">
-      <div class="card-header">Header</div>
-      <div class="card-body">
-        <h5 class="card-title">Dark card title</h5>
-        <p class="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </p>
-      </div>
-      <div class="card-footer">Card footer</div>
-    </div>
+
+<div class="container-fluid">
+  <div class="btn-group w-100">
+    <button
+      type="button"
+      class="btn btn-primary my-2"
+      redirect-to="/admin/users/edit/new"
+    >
+      New User
+    </button>
   </div>
-  <div class="col">
-    <div class="card text-bg-dark mb-3">
-      <div class="card-header">Header</div>
-      <div class="card-body">
-        <h5 class="card-title">Dark card title</h5>
-        <p class="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </p>
+  <div class="d-flex flex-wrap justify-content-center">
+    <div class="table-responsive w-100">
+      <table class="table table-dark border border-light">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td scope="row">{{user.id}}</td>
+            <td><a href="/user/{{user.username}}">{{user.username}}</a></td>
+            <td>{{user.email}}</td>
+            <td>
+              <div class="d-flex flex-inline">
+                <a href="/admin/users/edit/{{user.id}}/"
+                  ><i class="bi bi-pencil"></i></a
+                >&nbsp
+                <a href="/user/{{user.username}}"><i class="bi bi-eye"></i></a
+                >&nbsp
+                <a href="/api/v2/auth/delete/{{user.id}}/"
+                  ><i class="bi bi-trash"></i
+                ></a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="container-fluid mb-3">
+      <div class="text-center">
+        <div class="btn-group" role="group" aria-label="Page selector">
+          {% for page in range(pages) %}
+          <button type="button" class="btn btn-primary">{{page+1}}</button>
+          {% endfor %}
+        </div>
       </div>
-      <div class="card-footer">Card footer</div>
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col">
-    <div class="card text-bg-dark mb-3">
-      <div class="card-header">Header</div>
-      <div class="card-body">
-        <h5 class="card-title">Dark card title</h5>
-        <p class="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </p>
-      </div>
-      <div class="card-footer">Card footer</div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card text-bg-dark mb-3">
-      <div class="card-header">Header</div>
-      <div class="card-body">
-        <h5 class="card-title">Dark card title</h5>
-        <p class="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </p>
-      </div>
-      <div class="card-footer">Card footer</div>
-    </div>
-  </div>
-</div>
+<script>
+  const btnGroup = document.querySelector(".btn-group");
+  btnGroup.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const btnText = btn.textContent.trim();
+      window.location.href = `?p=${btnText}`;
+    });
+  });
+</script>
 {% endblock %}

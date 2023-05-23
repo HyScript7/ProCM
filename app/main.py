@@ -5,6 +5,7 @@ from common.configuration import FLASK_SECRET, FLASK_SESSION_LIFETIME
 from flask import Flask
 from flaskext.markdown import Markdown
 from models.user import create_default_admin
+from models.page import create_default_pages
 from routes import routes
 from sassutils.wsgi import SassMiddleware
 
@@ -26,6 +27,7 @@ for blueprint, prefix in routes:
     app.register_blueprint(blueprint)
 
 asyncio.run(create_default_admin())
+asyncio.run(create_default_pages())
 
 if __name__ == "__main__":
     # Run development server
