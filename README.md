@@ -118,7 +118,6 @@ To run the server, you need a MongoDB database and python installed on your host
 | PCM_COLLECTION_GROUPS   | Which collection to store permission groups in           |
 | PCM_COLLECTION_PROJECTS | This is not used                                         |
 | PCM_COLLECTION_POSTS    | Which collection to store blog posts in                  |
-| PCM_COLLECTION_COMMENTS | Which collection to store blog comments in               |
 | REGISTRATION            | Whether to enable registration or not (true/false)       |
 | BRAND                   | The name of the site                                     |
 | GIT_TOKEN               | The github token to fetch projects with                  |
@@ -140,14 +139,14 @@ For instructions on how to use ProCM, please reffer to the [Documentation](https
 - [x] Blog
 - [x] User profile "About me"
     - [x] Bio Editor
-- [ ] Project galery
-	- [ ] Image galery
-- [ ] Admin Panel
-	- [ ] User Management
-	- [ ] Blog Management
-	- [ ] Project Management (Might be removed in the future)
-- [ ] TOS/Privacy Docs
-- [ ] Documentation
+- [x] Project galery
+	- [x] Image galery
+- [x] Admin Panel
+	- [x] User Management
+	- [x] Blog Management
+	- [x] Project Management (Might be removed in the future)
+	- [x] Page editor
+- [x] Documentation
 - [ ] v3 API
 
 See the [open issues](https://github.com/HyScript7/ProCM/issues) for a full list of proposed features (and known issues).
