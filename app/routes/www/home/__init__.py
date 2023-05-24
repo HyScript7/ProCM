@@ -72,7 +72,7 @@ async def projects():
         css=CSS,
         js=JS,
         navbar=NAVBAR,
-        page="Home",
+        page="Projects",
         brand=BRAND,
         logon=logon,
         latest_posts=await latest_posts(),
