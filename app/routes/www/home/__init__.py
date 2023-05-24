@@ -168,7 +168,7 @@ async def profile(username: str):
     return render_template(
         "home/profile.html",
         hostname=HOSTNAME,
-        css=CSS + ["/static/css/quill.snow.css"],
+        css=CSS,
         js=JS
         + [
             "/static/js/jquery-3.6.4.slim.min.js",

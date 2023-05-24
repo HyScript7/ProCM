@@ -139,7 +139,7 @@ async def user_editor(uuid: str):
     return render_template(
         "admin/user_editor.html",
         hostname=HOSTNAME,
-        css=CSS + ["/static/css/quill.snow.css"],
+        css=CSS,
         js=JS
         + [
             "/static/js/quill.min.js",
@@ -222,7 +222,7 @@ async def blog_editor(uuid: str):
     return render_template(
         "admin/blog_editor.html",
         hostname=HOSTNAME,
-        css=CSS + ["/static/css/quill.snow.css"],
+        css=CSS,
         js=JS
         + [
             "/static/js/quill.min.js",
@@ -393,7 +393,7 @@ async def page_editor(route: str):
     return render_template(
         "admin/page_editor.html",
         hostname=HOSTNAME,
-        css=CSS + ["/static/css/quill.snow.css"],
+        css=CSS,
         js=JS
         + [
             "/static/js/quill.min.js",
