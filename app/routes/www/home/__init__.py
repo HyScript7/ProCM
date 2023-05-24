@@ -21,7 +21,7 @@ from .. import www
 
 @www.route("/favicon.ico")
 async def favicon():
-    return send_file("./static/img/favicon.ico")
+    return ""
 
 
 @www.route("/")
