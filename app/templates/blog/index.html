@@ -1,0 +1,71 @@
+{% extends "index.html" %} {% block content %} {% include
+"components/navbar.html" %}{% include "components/flashes.html" %}
+<div class="container-fluid mt-1 text-center">
+  <header>
+    <h1>Blog</h1>
+  </header>
+</div>
+<div class="my-3 container-fluid">
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="container">
+        <div class="table-responsive-lg">
+          <table class="table table-light">
+            <thead>
+              <tr>
+                <th scope="col">Author</th>
+                <th scope="col">Post</th>
+                <th scope="col">Tags</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if not posts %}
+              <tr>
+                <td scope="row" colspan="4" class="text-center">
+                  There is nothing here yet.
+                </td>
+              </tr>
+              {% endif %} {% for post in posts %}
+              <tr>
+                <td scope="row">
+                  <a class="link-primary" href="/user/{{post.author}}"
+                    >@{{post.author}}</a
+                  >
+                </td>
+                <td>
+                  <a
+                    class="link-primary-dark text-decoration-none"
+                    href="/blog/post/{{post.id}}"
+                    >{{post.title}}</a
+                  >
+                </td>
+                <td>{{post.tags}}</td>
+                <td>{{post.created}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center">
+          <div class="btn-group" role="group" aria-label="Page selector">
+            {% for page in range(pages) %}
+            <button type="button" class="btn btn-primary">{{page+1}}</button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">{% include "components/sidebar.html" %}</div>
+  </div>
+</div>
+<script>
+  const btnGroup = document.querySelector(".btn-group");
+  btnGroup.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const btnText = btn.textContent.trim();
+      window.location.href = `?p=${btnText}`;
+    });
+  });
+</script>
+{% include "components/footer.html" %} {% endblock %}

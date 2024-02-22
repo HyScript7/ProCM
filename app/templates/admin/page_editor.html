@@ -1,0 +1,120 @@
+{% extends "admin/index.html" %} {% block dash %}
+<div class="text-center">
+  <h1>{{page}}</h1>
+  <hr />
+</div>
+<div class="container-fluid d-flex flex-column mb-3">
+  <div id="toolbar" class="bg-light text-dark">
+    <span class="ql-formats">
+      <button class="ql-bold"></button>
+      <button class="ql-italic"></button>
+      <button class="ql-underline"></button>
+      <button class="ql-strike"></button>
+    </span>
+    <span class="ql-formats">
+      <button class="ql-blockquote"></button>
+      <button class="ql-code-block"></button>
+    </span>
+    <span class="ql-formats">
+      <button class="ql-list" value="ordered"></button>
+      <button class="ql-list" value="bullet"></button>
+    </span>
+    <span class="ql-formats">
+      <button class="ql-script" value="sub"></button>
+      <button class="ql-script" value="super"></button>
+    </span>
+    <span class="ql-formats">
+      <button class="ql-link"></button>
+      <button class="ql-image"></button>
+    </span>
+    <span class="ql-formats">
+      <button class="ql-indent" value="-1"></button>
+      <button class="ql-indent" value="+1"></button>
+    </span>
+    <span class="ql-formats">
+      <select class="ql-size">
+        <option value="small"></option>
+        <option selected></option>
+        <option value="large"></option>
+        <option value="huge"></option>
+      </select>
+    </span>
+    <span class="ql-formats">
+      <select class="ql-header">
+        <option value="1"></option>
+        <option value="2"></option>
+        <option value="3"></option>
+        <option value="4"></option>
+        <option value="5"></option>
+        <option value="6"></option>
+        <option selected value="7"></option>
+      </select>
+    </span>
+
+    <span class="ql-formats">
+      <select class="ql-color"></select>
+      <select class="ql-background"></select>
+    </span>
+
+    <span class="ql-formats">
+      <select class="ql-font"></select>
+    </span>
+
+    <span class="ql-formats">
+      <button class="ql-align" value=""></button>
+      <button class="ql-align" value="center"></button>
+      <button class="ql-align" value="right"></button>
+      <button class="ql-align" value="justify"></button>
+    </span>
+
+    <span class="ql-formats">
+      <button class="ql-clean"></button>
+    </span>
+  </div>
+  <div id="editor" class="container-fluid bg-light text-dark">
+    {{ editor.content | safe }}
+  </div>
+  <form id="editor-controls" method="post">
+    <div class="input-group mb-3 my-3">
+      <span class="input-group-text">Route</span>
+      <input
+        type="text"
+        class="form-control"
+        name="route"
+        id="route"
+        placeholder="Route"
+        value="{{editor.route}}"
+      />
+    </div>
+    <div class="btn-group w-100" role="group" aria-label="Editor Controls">
+      {% if editor.is_new %}
+      <button
+        type="submit"
+        class="btn btn-primary"
+        formaction="/api/v2/page/create/"
+      >
+        Create
+      </button>
+      {% else %}
+      <button
+        type="submit"
+        class="btn btn-primary"
+        formaction="/api/v2/page/update/{{editor.route}}/"
+      >
+        Save
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        formaction="/api/v2/page/create/"
+      >
+        Save as copy
+      </button>
+      {% endif %}
+      <button type="reset" class="btn btn-primary" formaction="">
+        Discard
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

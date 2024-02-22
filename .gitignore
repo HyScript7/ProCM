@@ -1,0 +1,64 @@
+# Obsidian
+.obsidian/
+
+# Compiled Bootstrap CSS
+app/static/css/*.scss.*
+
+# Bootstrap Source Code
+app/static/sass/bootstrap/
+app/static/css/icons/
+app/static/js/popper.min.js
+app/static/js/bootstrap.min.js
+
+# Quill.js
+app/static/js/quill.min.js
+app/static/css/quill.snow.css
+
+# jquerry
+app/static/js/jquery-3.6.4.slim.min.js
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django stuff:
+*.log
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Environments
+.env
+.env_prod
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

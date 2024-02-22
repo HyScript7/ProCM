@@ -1,0 +1,79 @@
+@import "./bootstrap/scss/functions";
+@import "./bootstrap/scss/variables";
+@import "./bootstrap/scss/maps";
+@import "./bootstrap/scss/mixins";
+@import "./bootstrap/scss/utilities";
+
+$primary: $cyan-600;
+$primary-dark: $cyan-700;
+$secondary: $blue-800;
+$secondary-dark: $gray-600;
+
+$theme-colors: (
+  "primary": $primary,
+  "primary-dark": $primary-dark,
+  "secondary": $secondary,
+  "secondary-dark": $secondary-dark,
+  "success": $success,
+  "info": $info,
+  "warn": $warning,
+  "error": $danger,
+  "light": $light,
+  "dark": $dark,
+);
+
+$utilities: map-merge(
+  $utilities,
+  (
+    "backdrop-filter": (
+      property: backdrop-filter,
+      class: bg-glass,
+      responsive: true,
+      values: (
+        0: blur(0px),
+        5: blur(5px),
+        10: blur(10px),
+        15: blur(15px),
+        20: blur(20px),
+        50: blur(50px),
+        100: blur(100px),
+      ),
+    ),
+    "bg-opacity":
+      map-merge(
+        map-get($utilities, "bg-opacity"),
+        (
+          responsive: true,
+        )
+      ),
+    "text-align":
+      map-merge(
+        map-get($utilities, "text-align"),
+        (
+          values:
+            map-merge(
+              map-get(map-get($utilities, "text-align"), "values"),
+              (
+                justify: justify,
+              )
+            ),
+        )
+      ),
+  )
+);
+
+body {
+  --scroll: 0px;
+  background-image: url("/static/img/background.svg");
+  background-size: cover;
+  background-repeat: repeat-y;
+  background-attachment: scroll;
+  background-position: 0px var(--scroll);
+}
+
+.cookie-consent {
+  position: fixed;
+  bottom: 0px;
+}
+
+@import "./bootstrap/scss/bootstrap";

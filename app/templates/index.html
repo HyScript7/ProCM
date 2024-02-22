@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{brand}}{{(" - " + title) if title else ''}}</title>
+  <!-- TODO: Change title to site name once decided -->
+  {% for url in css %}
+  <link rel="stylesheet" href="{{url}}" />
+  {% endfor %}
+  <style>
+    .bg-noise::before {
+      position: absolute;
+      content: "";
+      background-image: url("/static/img/noise.png");
+      background-size: 500px 500px;
+      opacity: 0.1;
+      z-index: -3;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-light">
+  <script>
+    0;
+  </script>
+  {% if hostname %}
+  <!-- You are conneted to {{hostname}} -->
+  {% endif %} {% block content %} {% endblock %} {% include
+  "components/cookies.html" %} {% for url in js %}
+  <script src="{{url}}"></script>
+  {% endfor %}
+</body>
+
+</html>

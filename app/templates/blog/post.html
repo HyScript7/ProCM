@@ -1,0 +1,56 @@
+{% extends "index.html" %} {% block content %} {% include
+"components/navbar.html" %}{% include "components/flashes.html" %}
+<div class="container-fluid mt-1">
+  <header>
+    <div>
+      <a href="/blog/" class="link link-light text-decoration-none"
+        >&#60;&#60; Back</a
+      ><span class="text-center"><h1>{{post.title}}</h1></span>
+    </div>
+  </header>
+</div>
+<div class="my-3 container-fluid">
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="container-fluid">
+        <div class="float-lg-start" style="min-width: 30vw">
+          <div
+            class="table-responsive mx-2 border border-2 border-light bg-dark"
+          >
+            <table class="table border-light border-0 text-light">
+              <thead>
+                <tr>
+                  <th scope="col" colspan="2">
+                    <h2>Table of Content</h2>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for title in post.table %}
+                <tr>
+                  <td scope="row">
+                    <a
+                      class="text-decoration-none link-primary"
+                      href="{{title[1]}}"
+                      ><div>{{title[2]}}</div></a
+                    >
+                  </td>
+                  <td scope="row">{{title[0]}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="container mb-3">
+          <article>
+            {% for htcontent in post.content %} {{htcontent | safe}} {% endfor
+            %}
+          </article>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">{% include "components/sidebar.html" %}</div>
+  </div>
+</div>
+{% include "components/footer.html" %} {% endblock %}

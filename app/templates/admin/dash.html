@@ -1,0 +1,185 @@
+{% extends "admin/index.html" %} {% block dash %}
+
+<div class="text-center">
+  <h1 class="mt-2">{{page}}</h1>
+  <hr />
+</div>
+<div class="container-fluid">
+  <div class="d-flex flex-wrap justify-content-center">
+    <div class="card text-bg-dark mb-3 ms-3" style="max-width: 40rem">
+      <div class="card-header">Users</div>
+      <div class="card-body row">
+        <div class="col">
+          <h4 class="card-title">{{dash.user_count}} Users</h4>
+          <p>
+            <b>{{dash.user_count}}</b> users have registered so far! Click one
+            of the buttons on the right to manage users. To disable
+            registration, see the .env file in the root of the application.
+          </p>
+        </div>
+        <div class="col">
+          <div class="d-flex flex-column">
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/users"
+            >
+              View all users
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/users/edit/new"
+            >
+              New User
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+
+    <div class="card text-bg-dark mb-3 ms-3" style="max-width: 40rem">
+      <div class="card-header">Blog Posts</div>
+      <div class="card-body row">
+        <div class="col">
+          <h4 class="card-title">{{dash.post_count}} Posts</h4>
+          <p class="card-text">
+            There are
+            <b>{{dash.post_count}}</b> blog posts stored in the database! Use
+            the provided buttons to skip to post management.
+          </p>
+        </div>
+        <div class="col">
+          <div class="d-flex flex-column">
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/blog/"
+            >
+              View blog posts
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/blog/edit/new"
+            >
+              New blog post
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+
+    <!--
+    <div class="card text-bg-dark mb-3 ms-3" style="max-width: 40rem">
+      <div class="card-header">Comments</div>
+      <div class="card-body row">
+        <div class="col">
+          <h4 class="card-title">{{dash.comment_count}} Comments</h4>
+          <p class="card-text">
+            There are
+            <b>{{dash.comment_count}}</b> comments posted across
+            <b>{{dash.post_count}}</b> posts. Use the comment management menu in
+            blog administration to view comments grouped by when they were
+            posted or what blog post they were posted on.
+          </p>
+        </div>
+        <div class="col">
+          <div class="d-flex flex-column">
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/blog/comments/"
+            >
+              View all comments
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/blog/comments?mod=1"
+            >
+              Moderate comments
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+    -->
+
+    <div class="card text-bg-dark mb-3 ms-3" style="max-width: 40rem">
+      <div class="card-header">Projects</div>
+      <div class="card-body row">
+        <div class="col">
+          <h4 class="card-title">{{dash.project_count}} Projects</h4>
+          <p class="card-text">
+            There are currently <b>{{dash.project_count}}</b> projects
+            avabiable. Use the project administration tab to configure them.
+          </p>
+        </div>
+        <div class="col">
+          <div class="d-flex flex-column">
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/projects"
+            >
+              Manage projects
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/projects/edit/new/"
+            >
+              New project
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+
+    <div class="card text-bg-dark mb-3 ms-3" style="max-width: 40rem">
+      <div class="card-header">Pages</div>
+      <div class="card-body row">
+        <div class="col">
+          <h4 class="card-title">{{dash.page_count}} Pages</h4>
+          <p>
+            <b>{{dash.page_count}}</b> pages have been created so far. You can
+            view them <a href="/admin/pages" class="link-primary">here</a> or
+            manage them using one of the buttons on the right.
+          </p>
+        </div>
+        <div class="col">
+          <div class="d-flex flex-column">
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/pages"
+            >
+              View all pages
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/pages/edit/0?new=1"
+            >
+              Create a new page
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary my-2"
+              redirect-to="/admin/pages/edit/index"
+            >
+              Edit homepage
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

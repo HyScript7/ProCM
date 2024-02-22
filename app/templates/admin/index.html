@@ -1,0 +1,12 @@
+{% extends "index.html" %} {% block content %}
+<div class="row">
+  <div class="col d-flex flex-nowrap">
+    {% include "admin/components/sidebar.html" %}
+    <div class="container-fluid pl-2">
+      {% include "components/flashes.html" %}
+      {% block dash %}
+      {% endblock %}
+    </div>
+  </div>
+</div>
+{% include "admin/components/footer.html" %} {% endblock %}
